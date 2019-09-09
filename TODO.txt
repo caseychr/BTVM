@@ -1,0 +1,45 @@
+
+Room:
+BT_PID: Distance, Air Temp, Coolant Temp, Vehicle Speed, Engine RPM
+
+Google Map: Current Location, Polyline Points
+
+Metrics: Service Miles, Ave Coolant Temp, Avg Vehicle Speed, Avg Air Temp, Avg Engine RPM
+
+Application:
+BTVMApp
+
+Activities:
+SplashActivity, ???BaseActivity???, MainActivity
+
+Fragments:
+MapFragment, SettingFragment, MetricsFragment(RecyclerAdapter)
+
+ViewModels:
+MapViewModel, SettingsViewModel, MetricsViewModel
+
+Repository:
+BT_PIDRepository, MapRepository, MetricsRepository
+
+MetricRecyclerAdapter: Metric model and Static map
+
+SharedPrefs & Room
+
+Components:
+AppComponent, MainComponent
+
+Modules:
+
+
+MVVM
+Dagger 2
+Unit Testing
+Google Maps
+
+ - 2) Animations
+ - 3) Room Setup
+ - 4) Dagger 2
+ - 5) Bluetooth Library implementation
+ - 6) Google Maps
+ - 7) Unit Testing
+ - 8) Databinding

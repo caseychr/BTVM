@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main"
+            app:startDestination="@+id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.bluetoothvehiclemonitor.btvm.ui.HomeFragment"
+        android:label="@string/home_title"
+        tools:layout="@layout/fragment_home"/>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.bluetoothvehiclemonitor.btvm.ui.SettingsFragment"
+        android:label="@string/settings_title"
+        tools:layout="@layout/fragment_settings"/>
+    <fragment
+        android:id="@+id/metricsFragment"
+        android:name="com.bluetoothvehiclemonitor.btvm.ui.MetricsFragment"
+        android:label="@string/metrics_title"
+        tools:layout="@layout/fragment_metrics"/>
+
+</navigation>
