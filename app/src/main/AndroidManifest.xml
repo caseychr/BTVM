@@ -25,7 +25,8 @@
         </activity>
         <activity android:name=".ui.MainActivity">
         </activity>
-
+        <service android:name=".services.BluetoothService"/>
+        <service android:name=".services.GPSService"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDNsIwuFeNraUtygmZabq088ze15XCNu14"/>

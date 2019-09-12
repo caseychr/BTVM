@@ -4,22 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "bluetoothPID")
+@Entity(tableName = "bluetoothPID_table")
 public class BluetoothPID {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mId;
-    private String mDate;
     private float mDistance;
     private float mVehicleSpeed;
     private float mCoolantTemp;
     private float mAirFlow;
     private float mEngineRPM;
 
-    public BluetoothPID(String date, float distance, float vehicleSpeed, float coolantTemp, float airFlow,
+    public BluetoothPID(float distance, float vehicleSpeed, float coolantTemp, float airFlow,
             float engineRPM) {
-        mDate = date;
         mDistance = distance;
         mVehicleSpeed = vehicleSpeed;
         mCoolantTemp = coolantTemp;
@@ -33,14 +31,6 @@ public class BluetoothPID {
 
     public void setId(int id) {
         mId = id;
-    }
-
-    public String getDate() {
-        return mDate;
-    }
-
-    public void setDate(String date) {
-        mDate = date;
     }
 
     public float getDistance() {

@@ -1,12 +1,18 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
+import com.bluetoothvehiclemonitor.btvm.services.GPSService;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.MainViewModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -23,6 +29,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private NavigationView mNavigationView;
     private AppBarConfiguration mAppBarConfiguration;
+    protected LocationReceiver mLocationReceiver;
+
+    IntentFilter mIntentFilter;
 
     private MainViewModel mMainViewModel;
 
@@ -37,7 +46,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
         mNavigationView = findViewById(R.id.nav_view);
         initNavigation();
+        mLocationReceiver = new LocationReceiver();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(GPSService.BROADCAST_ACTION);
+        mIntentFilter.addCategory(GPSService.BROADCAST_CATEGORY);
+        registerReceiver(mLocationReceiver, mIntentFilter);
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mLocationReceiver);
     }
 
     @Override
@@ -101,9 +122,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.menu_item: {
                 if(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination().equals(HomeFragment.class)) {
-                    Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
-                } else if(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination().equals(SettingsFragment.class)) {
-                    Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.metricsFragment);
+                    if(isValidDestination(R.id.menu_item)) {
+                        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
+                    }
+                } else if(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination()
+                        .equals(SettingsFragment.class)) {
+                    if(isValidDestination(R.id.menu_item)) {
+                        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.metricsFragment);
+                    }
                 }
                 break;
             }
@@ -119,5 +145,27 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), mAppBarConfiguration);
+    }
+
+    public class LocationReceiver extends BroadcastReceiver {
+        private static final String TAG = "LocationReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "MAIN ACTIVITY IN RECEIVER");
+            if(intent.hasExtra(GPSService.NEW_LOCATION_BROADCAST)) {
+                Location location = intent.getParcelableExtra(GPSService.CURRENT_LOCATION_KEY);
+                storeLocations(location, context);
+            } else if(intent.hasExtra(GPSService.NO_LOCATION_BROADCAST)) {
+                Toast.makeText(context, "We are not receiving new location", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private void storeLocations(Location location, Context context) {
+            sCurrentLocation = location;
+            mMainViewModel.setLastLatLon(String.valueOf(location.getLatitude()),
+                    String.valueOf(location.getLongitude()));
+            mMainViewModel.updateLatLonList();
+        }
     }
 }

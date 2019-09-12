@@ -22,7 +22,7 @@ public interface MetricsDao {
     @Delete
     void delete(Metrics metric);
 
-    @Query("SELECT * FROM metrics ORDER BY mId")
+    @Query("SELECT * FROM metrics_table ORDER BY mId")
     List<Metrics> getAllMetrics();
 
 }

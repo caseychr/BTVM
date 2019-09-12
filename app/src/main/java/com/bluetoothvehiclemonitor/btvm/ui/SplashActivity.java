@@ -58,6 +58,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mProgressBar.setVisibility(View.GONE);
         Intent intent = MainActivity.newIntent(this);
         startActivity(intent);
+        finish();
     }
 
     // Show popupwindow of paired devices when one is not chosen
@@ -78,7 +79,8 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
             public void onClick(int position) {
                 BluetoothDevice device = mSplashViewModel.mDevices.get(position);
                 SharedPrefs.getInstance(getApplicationContext()).setDevice(device.getName(), device.getAddress());
-                checkPerms();
+                BaseActivity.sBluetoothDevice = device;
+                        checkPerms();
                 mDeviceWindow.dismiss();
             }
         });
@@ -109,8 +111,9 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode == RESULT_OK) {
-            if(requestCode == SplashViewModel.BLUETOOTH_ON_REQUEST_CODE) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SplashViewModel.BLUETOOTH_ON_REQUEST_CODE) {
                 checkPerms();
             }
         }

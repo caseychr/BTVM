@@ -27,7 +27,7 @@ public class MetricsFragment extends Fragment {
      * 1) Get metric units and display correctly
      * 2) get all Metrics from Room
      * 3) Use ViewModel to get Metrics from Room and display
-     *
+     * 4) Retrofit -> Grab static map and display polyline trip on image -> Glide
      */
 
     View mView;

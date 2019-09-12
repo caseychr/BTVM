@@ -43,3 +43,5 @@ Google Maps
  - 6) Google Maps
  - 7) Unit Testing
  - 8) Databinding
+ - 9) LiveData
+ - 10) Retrofit for static maps
