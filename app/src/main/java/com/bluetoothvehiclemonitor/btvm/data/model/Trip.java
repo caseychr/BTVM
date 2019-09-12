@@ -12,15 +12,19 @@ public class Trip {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mId;
-    private MapInfo mMapInfo;
+    private int mZoomLevel;
+    private List<Float> mLats;
+    private List<Float> mLons;
     private Metrics mMetrics;
-    private List<BluetoothPID> mPIDList;
+    private String mTimeStamp;
 
-    public Trip(MapInfo mapInfo, Metrics metrics,
-            List<BluetoothPID> PIDList) {
-        mMapInfo = mapInfo;
+    public Trip(int zoomLevel, List<Float> lats, List<Float> lons,
+            Metrics metrics, String timeStamp) {
+        mZoomLevel = zoomLevel;
+        mLats = lats;
+        mLons = lons;
         mMetrics = metrics;
-        mPIDList = PIDList;
+        mTimeStamp = timeStamp;
     }
 
     public int getId() {
@@ -31,12 +35,28 @@ public class Trip {
         mId = id;
     }
 
-    public MapInfo getMapInfo() {
-        return mMapInfo;
+    public int getZoomLevel() {
+        return mZoomLevel;
     }
 
-    public void setMapInfo(MapInfo mapInfo) {
-        mMapInfo = mapInfo;
+    public void setZoomLevel(int zoomLevel) {
+        mZoomLevel = zoomLevel;
+    }
+
+    public List<Float> getLats() {
+        return mLats;
+    }
+
+    public void setLats(List<Float> lats) {
+        mLats = lats;
+    }
+
+    public List<Float> getLons() {
+        return mLons;
+    }
+
+    public void setLons(List<Float> lons) {
+        mLons = lons;
     }
 
     public Metrics getMetrics() {
@@ -47,11 +67,11 @@ public class Trip {
         mMetrics = metrics;
     }
 
-    public List<BluetoothPID> getPIDList() {
-        return mPIDList;
+    public String getTimeStamp() {
+        return mTimeStamp;
     }
 
-    public void setPIDList(List<BluetoothPID> PIDList) {
-        mPIDList = PIDList;
+    public void setTimeStamp(String timeStamp) {
+        mTimeStamp = timeStamp;
     }
 }

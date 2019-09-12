@@ -22,6 +22,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * TODO grab static maps from googlemaps URL
+ * 1) MapInfo stored in Room needs zoom level, window size & polylines
+ * 2) Need Retrofit
+ */
+
 public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "MetricsAdapter";
 
@@ -69,10 +75,10 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             RequestOptions requestOptions = new RequestOptions()
                     .placeholder(R.drawable.ic_btvm);
 
-            Glide.with(holder.itemView.getContext())
+            /*Glide.with(holder.itemView.getContext())
                     .setDefaultRequestOptions(requestOptions)
                     .load(mMetricsList.get(position).getMapImage())
-                    .into(((MetricsViewHolder)holder).mStaticMap);
+                    .into(((MetricsViewHolder)holder).mStaticMap);*/
 
             /**
              *

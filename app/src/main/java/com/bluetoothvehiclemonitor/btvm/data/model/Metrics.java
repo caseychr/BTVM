@@ -1,10 +1,12 @@
 package com.bluetoothvehiclemonitor.btvm.data.model;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "metrics")
+@Entity(tableName = "metrics_table")
 public class Metrics {
 
     @PrimaryKey(autoGenerate = true)
@@ -15,10 +17,9 @@ public class Metrics {
     private String mEngineRPM;
     private String mCoolantTemp;
     private String mVehicleSpeed;
-    private byte[] mMapImage;
+    //private List<Integer> mBluetoothPIDS_Integers;
 
-    public Metrics(String distance, String airFlow, String engineRPM, String coolantTemp,
-            String vehicleSpeed) {
+    public Metrics(String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed) {
         mDistance = distance;
         mAirFlow = airFlow;
         mEngineRPM = engineRPM;
@@ -74,11 +75,11 @@ public class Metrics {
         mVehicleSpeed = vehicleSpeed;
     }
 
-    public byte[] getMapImage() {
-        return mMapImage;
+    /*public List<Integer> getBluetoothPIDS_Integers() {
+        return mBluetoothPIDS_Integers;
     }
 
-    public void setMapImage(byte[] mapImage) {
-        mMapImage = mapImage;
-    }
+    public void setBluetoothPIDS_Integers(List<Integer> bluetoothPIDS_Integers) {
+        mBluetoothPIDS_Integers = bluetoothPIDS_Integers;
+    }*/
 }

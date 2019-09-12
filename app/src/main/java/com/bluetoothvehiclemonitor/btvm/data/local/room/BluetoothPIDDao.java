@@ -23,16 +23,12 @@ public interface BluetoothPIDDao {
     @Delete
     void delete(BluetoothPID pid);
 
-    @Query("DELETE FROM bluetoothPID")
+    @Query("DELETE FROM bluetoothPID_table")
     void  deleteAllPIDEntries();
 
-    @Query("SELECT * FROM bluetoothPID ORDER BY mId DESC")
+    @Query("SELECT * FROM bluetoothPID_table ORDER BY mId DESC")
     LiveData<List<BluetoothPID>> getAllPIDs();
 
-    @Query("SELECT * FROM bluetoothPID WHERE mId = :id")
+    @Query("SELECT * FROM bluetoothPID_table WHERE mId = :id")
     LiveData<BluetoothPID> getPIDById(int id);
-
-    @Query("SELECT * FROM bluetoothPID WHERE mDate = :date")
-    LiveData<BluetoothPID> getPIDByDate(String date);
-
 }

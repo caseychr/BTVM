@@ -24,6 +24,7 @@ dependencies {
     def material_version = "1.0.0"
     def room_version = "2.2.0-beta01"
     def nav_version = "2.1.0-alpha02"
+    def PARCELER_VERSION = '1.0.3'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -31,6 +32,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // Location Services
+    implementation "com.google.android.gms:play-services-location:15.0.1"
+
+    // Bluetooth Library
+    implementation files('bluetooth-service-library-release.aar')
 
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
@@ -53,4 +60,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
     implementation "androidx.navigation:navigation-runtime:$nav_version"
+
+    implementation "org.parceler:parceler-api:$PARCELER_VERSION"
+    //annotationProcessor "org.parceler:parceler:$PARCELER_VERSION"
 }
