@@ -11,6 +11,7 @@ import android.provider.Settings;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+import com.bluetoothvehiclemonitor.btvm.ui.BaseActivity;
 import com.bluetoothvehiclemonitor.btvm.util.PermissionsUtil;
 
 import java.util.ArrayList;
@@ -29,9 +30,11 @@ public class SplashViewModel extends AndroidViewModel {
     public boolean isBTOn;
     public boolean hasBTPairedDevice;
     public boolean hasBTConnectedDevice;
+    private boolean mHasStoredBluetoothDevice;
     public String mDialogTv;
     public String mBtnDialog;
     public BluetoothAdapter mAdapter;
+    String[] mBluetoothDeviceArray;
     public List<BluetoothDevice> mDevices = new ArrayList<>();
 
     public SplashViewModel(Application application) {
@@ -48,18 +51,27 @@ public class SplashViewModel extends AndroidViewModel {
         if(mAdapter != null) {
             mDevices.addAll(mAdapter.getBondedDevices());
         }
+        mHasStoredBluetoothDevice = SharedPrefs.getInstance(mApplication.getApplicationContext()) // is there a device connected?
+                .mSharedPrefs.contains(PREF_BT_DEVICE_NAME);
+        if(mHasStoredBluetoothDevice) {
+            mBluetoothDeviceArray = SharedPrefs.getInstance(mApplication.getApplicationContext()).getDevice();
+        }
     }
 
     public boolean checkBluetoothRequirements(Activity activity) {
-        mAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mAdapter == null) { // is BT Capable?
             mDialogTv = activity.getString(R.string.perms_error_not_bt_capable);
             mBtnDialog = activity.getString(R.string.perms_btn_close_app);
         } else {
             if(mAdapter.isEnabled()) { // is BT On?
-                if(mAdapter.getBondedDevices().size() > 0) { // are there devices paired?
-                    if(SharedPrefs.getInstance(mApplication.getApplicationContext()) // is there a device connected?
-                            .mSharedPrefs.contains(PREF_BT_DEVICE_NAME) || mAdapter.getBondedDevices().size() == 1) {
+                if(mDevices.size() > 0) { // are there devices paired?
+                    if(mHasStoredBluetoothDevice) {
+                        setBluetoothDevice();
+                        if(PermissionsUtil.mLocationPermissionGranted) {
+                            return true;
+                        }
+                    } else if(mAdapter.getBondedDevices().size() == 1) {
+                        BaseActivity.sBluetoothDevice = mDevices.get(0);
                         if(PermissionsUtil.mLocationPermissionGranted) {
                             return true;
                         }
@@ -101,6 +113,17 @@ public class SplashViewModel extends AndroidViewModel {
     public List<BluetoothDevice> getDevices() {
         mDevices.addAll(mAdapter.getBondedDevices());
         return mDevices;
+    }
+
+    private void setBluetoothDevice() {
+
+        String name = mBluetoothDeviceArray[0];
+        String address = mBluetoothDeviceArray[1];
+        for(BluetoothDevice device:mDevices) {
+            if(device.getName().equals(name) && device.getAddress().equals(address)) {
+                BaseActivity.sBluetoothDevice = device;
+            }
+        }
     }
 
     public boolean getAllPermissions(Activity activity) {

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -32,7 +33,8 @@ public class GPSService extends IntentService {
     private static Context mContext;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mCurrentLocation;
-    private Handler mHandler;
+    private static Handler mHandler;
+    private static boolean mIsPolling;
     private Runnable mCurrentLocationRunnable = new Runnable() {
         @Override
         public void run() {
@@ -75,6 +77,7 @@ public class GPSService extends IntentService {
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        mIsPolling = true;
         mHandler.post(mCurrentLocationRunnable);
         return START_STICKY;
     }
@@ -90,12 +93,19 @@ public class GPSService extends IntentService {
 
     }
 
+    public static void stopLocationPolling() {
+        Log.i(TAG, "stopping Location Polling");
+        mIsPolling = false;
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
     private void broadcastCurrentLocation(Location location) {
-        Log.i(TAG, "broadcastCurrentLocation");
+        Log.i(TAG, "broadcastCurrentLocation ");
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(BROADCAST_ACTION);
         broadcastIntent.addCategory(BROADCAST_CATEGORY);
         if (location != null) {
+            Log.i(TAG, "location not null");
             broadcastIntent.putExtra(BROADCAST_TYPE_KEY, NEW_LOCATION_BROADCAST);
             broadcastIntent.putExtra(CURRENT_LOCATION_KEY, location);
         } else {

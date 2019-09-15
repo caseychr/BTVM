@@ -27,7 +27,6 @@ public class SettingsFragment extends Fragment {
     /**
      * 1) Animation from SettingsFragment to HomeFragment
      * 2) Preset already chosen BT Device
-     * 3) Choose different device
      * 4) Don't show doubles
      * 5) Block device choice when already started
      */

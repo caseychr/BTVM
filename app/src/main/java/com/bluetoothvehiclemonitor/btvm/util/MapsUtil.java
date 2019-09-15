@@ -27,12 +27,8 @@ public class MapsUtil {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
-    public static void updatePolylines(GoogleMap googleMap, List<LatLng> locationList, Location location) {
+    public static void updatePolylines(GoogleMap googleMap, List<LatLng> locationList) {
         PolylineOptions mOptions = new PolylineOptions();
-        BaseActivity.sCurrentLocation = location;
-        locationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
-        //final MapInfo mapInfo = new MapInfo(DateUtils.getStringFromCurrentDate(), location.getLatitude(), location.getLongitude());
-        //mHomeViewModel.insertMapInfo(mapInfo);
         googleMap.clear();
         mOptions.getPoints().clear();
         mOptions.color(R.color.color_brown_purple);
@@ -41,6 +37,8 @@ public class MapsUtil {
         googleMap.addPolyline(mOptions);
         googleMap.addMarker(new MarkerOptions().position(locationList.get(0))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        googleMap.addMarker(new MarkerOptions().position(locationList.get(locationList.size()-1))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
         animateMap(googleMap, new LatLng(locationList.get(locationList.size()-1).latitude,
                 locationList.get(locationList.size()-1).longitude), DEFAULT_ZOOM);
     }
@@ -49,7 +47,7 @@ public class MapsUtil {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         if(locationList != null && !locationList.isEmpty()) {
             builder.include(locationList.get(0));
-            int padding = (int) (fragment.getView().getWidth() * 0.1);
+            int padding = (int) (fragment.getView().getWidth() * 0.3);
             builder.include(locationList.get(locationList.size()-1));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), padding));
         }

@@ -2,7 +2,9 @@ package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,11 @@ import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.util.PermissionsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SplashViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +31,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SplashActivity extends BaseActivity implements BottomSheetDialog.BottomSheetListener {
+    private static final String TAG = "SplashActivity";
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     ViewGroup mViewGroup;
     RecyclerView mRecyclerView;
@@ -40,6 +50,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        getDeviceLocation();
         mParent = findViewById(R.id.splash);
         mViewGroup = findViewById(android.R.id.content);
         mSpashView = findViewById(R.id.img_splash);
@@ -133,6 +144,33 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     public void onButtonClicked() {
         if(!mSplashViewModel.onDialogClick(this)) {
             initDeviceWindow();
+        }
+    }
+
+    private void getDeviceLocation() {
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        try{
+            Task location = mFusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if(task.isSuccessful()) { // We send currentLocation to broadcastLocation and then check for NULL
+                        //found location!
+                        Log.i(TAG, "Does this RUN???");
+                        sCurrentLocation = (Location) task.getResult();
+                        //mMainViewModel.setLastLatLon(String.valueOf(sCurrentLocation.getLatitude()),
+                          //      String.valueOf(sCurrentLocation.getLongitude()));
+                        Log.i(TAG+" INIT", sCurrentLocation.toString());
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // something happened no location found
+                }
+            });
+        } catch (SecurityException e) {
+
         }
     }
 }

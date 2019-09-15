@@ -2,6 +2,7 @@ package com.bluetoothvehiclemonitor.btvm.data.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "bluetoothPID_table")
@@ -16,6 +17,11 @@ public class BluetoothPID {
     private float mAirFlow;
     private float mEngineRPM;
 
+
+    public BluetoothPID() {
+    }
+
+    @Ignore
     public BluetoothPID(float distance, float vehicleSpeed, float coolantTemp, float airFlow,
             float engineRPM) {
         mDistance = distance;
