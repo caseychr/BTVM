@@ -17,7 +17,6 @@ public class Metrics {
     private String mEngineRPM;
     private String mCoolantTemp;
     private String mVehicleSpeed;
-    //private List<Integer> mBluetoothPIDS_Integers;
 
     public Metrics(String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed) {
         mDistance = distance;

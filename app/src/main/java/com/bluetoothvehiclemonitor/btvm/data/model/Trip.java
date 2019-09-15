@@ -1,30 +1,43 @@
 package com.bluetoothvehiclemonitor.btvm.data.model;
 
+import android.location.Location;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "trip_table")
+@Entity()
 public class Trip {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mId;
     private int mZoomLevel;
-    private List<Float> mLats;
-    private List<Float> mLons;
-    private Metrics mMetrics;
+    private List<Double> mLats;
+    private List<Double> mLons;
+    private int mMetricsId;
     private String mTimeStamp;
 
-    public Trip(int zoomLevel, List<Float> lats, List<Float> lons,
-            Metrics metrics, String timeStamp) {
+    private List<Integer> mBluetooth_PID;
+
+    public Trip() {
+    }
+
+    @Ignore
+    public Trip(int zoomLevel, ArrayList<Double> lats, ArrayList<Double> lons, int metricsId, String timeStamp,
+            ArrayList<Integer> bluetooth_PID) {
         mZoomLevel = zoomLevel;
         mLats = lats;
         mLons = lons;
-        mMetrics = metrics;
+        mMetricsId = metricsId;
         mTimeStamp = timeStamp;
+        mBluetooth_PID = bluetooth_PID;
     }
 
     public int getId() {
@@ -43,28 +56,28 @@ public class Trip {
         mZoomLevel = zoomLevel;
     }
 
-    public List<Float> getLats() {
+    public List<Double> getLats() {
         return mLats;
     }
 
-    public void setLats(List<Float> lats) {
+    public void setLats(List<Double> lats) {
         mLats = lats;
     }
 
-    public List<Float> getLons() {
+    public List<Double> getLons() {
         return mLons;
     }
 
-    public void setLons(List<Float> lons) {
+    public void setLons(List<Double> lons) {
         mLons = lons;
     }
 
-    public Metrics getMetrics() {
-        return mMetrics;
+    public int getMetricsId() {
+        return mMetricsId;
     }
 
-    public void setMetrics(Metrics metrics) {
-        mMetrics = metrics;
+    public void setMetricsId(int metricsId) {
+        mMetricsId = metricsId;
     }
 
     public String getTimeStamp() {
@@ -73,5 +86,26 @@ public class Trip {
 
     public void setTimeStamp(String timeStamp) {
         mTimeStamp = timeStamp;
+    }
+
+    public List<Integer> getBluetooth_PID() {
+        return mBluetooth_PID;
+    }
+
+    public void setBluetooth_PID(List<Integer> bluetooth_PID) {
+        mBluetooth_PID = bluetooth_PID;
+    }
+
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "mId=" + mId +
+                ", mZoomLevel=" + mZoomLevel +
+                ", mLats=" + mLats +
+                ", mLons=" + mLons +
+                ", mMetricsId=" + mMetricsId +
+                ", mTimeStamp='" + mTimeStamp + '\'' +
+                ", mBluetooth_PID=" + mBluetooth_PID +
+                '}';
     }
 }
