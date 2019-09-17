@@ -12,13 +12,15 @@ public class Metrics {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mId;
+    private int mTripId;
     private String mDistance;
     private String mAirFlow;
     private String mEngineRPM;
     private String mCoolantTemp;
     private String mVehicleSpeed;
 
-    public Metrics(String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed) {
+    public Metrics(int tripId, String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed) {
+        mTripId = tripId;
         mDistance = distance;
         mAirFlow = airFlow;
         mEngineRPM = engineRPM;
@@ -32,6 +34,14 @@ public class Metrics {
 
     public void setId(int id) {
         mId = id;
+    }
+
+    public int getTripId() {
+        return mTripId;
+    }
+
+    public void setTripId(int tripId) {
+        mTripId = tripId;
     }
 
     public String getDistance() {

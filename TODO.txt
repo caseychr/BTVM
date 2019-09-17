@@ -31,18 +31,11 @@ AppComponent, MainComponent
 Modules:
 
 HOME FRAGMENT
- - Google Maps -> draw polylines -> start and end location icons
- - Trip save all polylines, BT ids, zoom level, metric
  - Animations -> From Home to Settings and back
 
 BLUETOOTH LIBRARY
  - Fix Bluetooth Library - Fix POLLING
  - Timeout error for not correct bluetooth device
-
-SETTINGS FRAGMENT
- - Settings -> set devices in recycler adapter correctly
- - Show already chosen device on recycler adapter
- - When start is already pressed prevent user from choosing new device
 
 METRICS FRAGMENT/ADAPTER
  - Get and display Metric units
@@ -50,10 +43,10 @@ METRICS FRAGMENT/ADAPTER
  - Build retrofit and GET/Display static map for each Trip
 
 NEW IMPLEMENTATION
- - Unit Tests - implement
  - LiveData - implement
  - DataBinding - implement
  - Dagger 2 - implement
+ - Unit Tests - implement
 
 
 MVVM

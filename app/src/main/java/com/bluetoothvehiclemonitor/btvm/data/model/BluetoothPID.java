@@ -11,6 +11,7 @@ public class BluetoothPID {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mId;
+    private int mTripId;
     private float mDistance;
     private float mVehicleSpeed;
     private float mCoolantTemp;
@@ -22,8 +23,9 @@ public class BluetoothPID {
     }
 
     @Ignore
-    public BluetoothPID(float distance, float vehicleSpeed, float coolantTemp, float airFlow,
+    public BluetoothPID(int tripId, float distance, float vehicleSpeed, float coolantTemp, float airFlow,
             float engineRPM) {
+        mTripId = tripId;
         mDistance = distance;
         mVehicleSpeed = vehicleSpeed;
         mCoolantTemp = coolantTemp;
@@ -37,6 +39,14 @@ public class BluetoothPID {
 
     public void setId(int id) {
         mId = id;
+    }
+
+    public int getTripId() {
+        return mTripId;
+    }
+
+    public void setTripId(int tripId) {
+        mTripId = tripId;
     }
 
     public float getDistance() {
