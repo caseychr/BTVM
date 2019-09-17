@@ -17,12 +17,15 @@ import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
+import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.services.BluetoothService;
 import com.bluetoothvehiclemonitor.btvm.services.GPSService;
 import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
+import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
+import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
 import com.driverapp.bluetoothandroidlibrary.MessageUpdate;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,8 +49,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
      * TODO
      * 1) Fix Bluetooth Library -> not polling and updating correctly
      * 2) Refactor polylines update to be cleaner
-     * 3) Retrieve and update correct trip
-     * 4) Save trip (trip & metrics) on STOP
      * 5) Animation from BT card to SettingsFragment
      */
 
@@ -71,12 +72,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     private HomeViewModel mHomeViewModel;
     Intent mBluetoothService;
     Intent mGPSService;
-    public boolean mStartPressed;
 
     List<Double> mLats = new ArrayList<>();
     List<Double> mLons = new ArrayList<>();
     List<LatLng> mLocationList = new ArrayList<>();
     Trip mTrip;
+    Metrics mMetrics;
     BluetoothPID mBluetoothPID;
 
     protected LocationReceiver mLocationReceiver;
@@ -91,7 +92,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         getActivity().registerReceiver(mLocationReceiver, mIntentFilter);
         mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mGPSService = GPSService.newIntent(getActivity());
-        subscribeGetTripObserver();
     }
 
     @Nullable
@@ -166,10 +166,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
             @Override
             public void onClick(View view) {
                 if(mStartTv.getText().toString().equalsIgnoreCase("Start")) {
-                    mStartPressed = true;
+                    BaseActivity.mStartPressed = true;
                     startPressed();
                 } else if (mStartTv.getText().toString().equalsIgnoreCase("Stop")) {
-                    mStartPressed = false;
+                    BaseActivity.mStartPressed = false;
                     stopPressed();
                 }
             }
@@ -192,6 +192,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         mBluetoothService = BluetoothService.newIntent(getContext(),
                 BaseActivity.sBluetoothDevice, HomeFragment.this);
         Log.i(TAG, mTrip.getTimeStamp());
+        subscribeObservers();
         //start services
         getActivity().startService(mGPSService);
         getActivity().startService(mBluetoothService);
@@ -203,6 +204,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         MapsUtil.animateMapWithBounds(HomeFragment.this, mGoogleMap, mLocationList);
         // stop services
         Log.i(TAG, "Stopping Services");
+        mMetrics.setTripId(mTrip.getId());
+        mHomeViewModel.insertMetrics(mMetrics);
         GPSService.stopLocationPolling();
         getActivity().stopService(mGPSService);
         getActivity().stopService(mBluetoothService);
@@ -242,10 +245,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         } else {
             mBTRunning.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
-            BluetoothPID bluetoothPID = new BluetoothPID(Float.valueOf(mDistanceNumTv.getText().toString()),
+            BluetoothPID bluetoothPID = new BluetoothPID(mTrip.getId(), Float.valueOf(mDistanceNumTv.getText().toString()),
                     Float.valueOf(mSpeedNumTv.getText().toString()), Float.valueOf(mCoolantNumTv.getText().toString()),
                     Float.valueOf(mAirFlowNumTv.getText().toString()), Float.valueOf(mRPMNumTv.getText().toString()));
-//            mHomeViewModel.insertBTPID(bluetoothPID);
+            mHomeViewModel.insertBTPID(TestingUtil.getMockPID());
         }
     }
 
@@ -304,11 +307,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
     }
 
-    private void subscribeGetTripObserver() {
+    private void subscribeObservers() {
         mHomeViewModel.getTripById().observe(this, new Observer<Trip>() {
             @Override
             public void onChanged(Trip trip) {
-                if(mStartPressed) {
+                if(BaseActivity.mStartPressed) {
                     if(trip.getLats() != null) {
                         mLats = trip.getLats();
                         mTrip = trip;
@@ -323,6 +326,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
                 Log.i(TAG, trips.toString());
             }
         });
+        mHomeViewModel.getPIDsByTripId(mTrip.getId()).observe(this, new Observer<List<BluetoothPID>>() {
+            @Override
+            public void onChanged(List<BluetoothPID> bluetoothPIDS) {
+                mMetrics = MetricsUtil.getTripMetrics(mTrip.getId(), bluetoothPIDS);
+            }
+        });
     }
 
     public class LocationReceiver extends BroadcastReceiver {
@@ -335,20 +344,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
                 if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NEW_LOCATION_BROADCAST)) {
                     Log.i(TAG, "received new location");
                     Location location = intent.getParcelableExtra(GPSService.CURRENT_LOCATION_KEY);
-                    storeLocations(location, context);
+                    BaseActivity.sCurrentLocation = location;
                     updatePolylineList(location);
                 } else if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NO_LOCATION_BROADCAST)) {
                     Log.i(TAG, "NO new location");
                     Toast.makeText(context, "We are not receiving new location", Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-
-        private void storeLocations(Location location, Context context) {
-            BaseActivity.sCurrentLocation = location;
-            /*mMainViewModel.setLastLatLon(String.valueOf(location.getLatitude()),
-                    String.valueOf(location.getLongitude()));
-            mMainViewModel.updateLatLonList();*/
         }
     }
 }

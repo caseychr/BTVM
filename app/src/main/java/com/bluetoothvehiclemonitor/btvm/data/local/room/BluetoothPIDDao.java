@@ -29,6 +29,9 @@ public interface BluetoothPIDDao {
     @Query("SELECT * FROM bluetoothPID_table ORDER BY mId DESC")
     LiveData<List<BluetoothPID>> getAllPIDs();
 
+    @Query("SELECT * FROM bluetoothPID_table WHERE mTripId = :mTripId")
+    LiveData<List<BluetoothPID>> getPIDsByTripId(int mTripId);
+
     @Query("SELECT * FROM bluetoothPID_table WHERE mId = :id")
     LiveData<BluetoothPID> getPIDById(int id);
 }

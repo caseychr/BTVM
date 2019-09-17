@@ -1,14 +1,17 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 
 import java.util.List;
 
@@ -22,14 +25,30 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         void onClick(int position);
     }
 
+    Context mContext;
     List<BluetoothDevice> mDevices;
     OnItemClickListener mOnItemClickListener;
+    private boolean d = false;
 
     int lastCheckedPosition = -1;
 
-    public DeviceAdapter(List<BluetoothDevice> devices) {
+    public DeviceAdapter(List<BluetoothDevice> devices, Context context) {
+        mContext = context;
         mDevices = devices;
         Log.i(TAG, mDevices.toString());
+        getStoredDevice();
+    }
+
+    private void getStoredDevice() {
+        if(SharedPrefs.getInstance(mContext).mSharedPrefs.contains(SharedPrefs.PREF_BT_DEVICE_NAME)) {
+            String[] device = SharedPrefs.getInstance(mContext).getDevice();
+            for(int i=0;i<mDevices.size();i++) {
+                if(mDevices.get(i).getName().equals(device[0]) && mDevices.get(i).getAddress().equals(device[1])) {
+                    lastCheckedPosition = i;
+                    return;
+                }
+            }
+        }
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -84,9 +103,13 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
         @Override
         public void onClick(View view) {
-            lastCheckedPosition = getAdapterPosition();
-            mOnItemClickListener.onClick(lastCheckedPosition);
-            notifyDataSetChanged();
+            if(BaseActivity.mStartPressed) {
+                lastCheckedPosition = getAdapterPosition();
+                mOnItemClickListener.onClick(lastCheckedPosition);
+                notifyDataSetChanged();
+            }else {
+                Toast.makeText(mContext, "Bluetooth is already running. Cannot change devices", Toast.LENGTH_LONG).show();
+            }
         }
 
     }

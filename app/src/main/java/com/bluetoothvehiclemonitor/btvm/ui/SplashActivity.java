@@ -81,7 +81,8 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mRecyclerView = mDeviceView.findViewById(R.id.device_list_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if(mDeviceAdapter == null){
-            mDeviceAdapter = new DeviceAdapter(mSplashViewModel.getDevices());
+            Log.i(TAG, String.valueOf(mSplashViewModel.getDevices().size()));
+            mDeviceAdapter = new DeviceAdapter(mSplashViewModel.getDevices(), getApplicationContext());
             mRecyclerView.setAdapter(mDeviceAdapter);
         }
         mDeviceAdapter.notifyDataSetChanged();
@@ -91,7 +92,9 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 BluetoothDevice device = mSplashViewModel.mDevices.get(position);
                 SharedPrefs.getInstance(getApplicationContext()).setDevice(device.getName(), device.getAddress());
                 BaseActivity.sBluetoothDevice = device;
-                        checkPerms();
+                Log.i(TAG, ""+BaseActivity.sBluetoothDevice.getName());
+                Log.i(TAG, ""+SharedPrefs.getInstance(getApplicationContext()).getDevice().toString());
+                checkPerms();
                 mDeviceWindow.dismiss();
             }
         });
@@ -160,7 +163,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                         sCurrentLocation = (Location) task.getResult();
                         //mMainViewModel.setLastLatLon(String.valueOf(sCurrentLocation.getLatitude()),
                           //      String.valueOf(sCurrentLocation.getLongitude()));
-                        Log.i(TAG+" INIT", sCurrentLocation.toString());
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {

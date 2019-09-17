@@ -32,7 +32,6 @@ public class SettingsViewModel extends AndroidViewModel {
 
 
     public List<BluetoothDevice> getDevices() {
-        mDevices.addAll(mAdapter.getBondedDevices());
         return mDevices;
     }
 

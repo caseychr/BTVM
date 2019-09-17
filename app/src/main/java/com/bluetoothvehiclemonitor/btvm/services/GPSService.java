@@ -20,7 +20,7 @@ import androidx.annotation.Nullable;
 public class GPSService extends IntentService {
     private static final String TAG = "GPSPollingService";
 
-    private static final long DEFAULT_POLL_DELAY = 15 * 1000L; /* 15 seconds */
+    private static final long DEFAULT_POLL_DELAY = 5 * 1000L; /* 5 seconds */
 
     public static final String BROADCAST_TYPE_KEY = "com.bluetoothvehiclemonitor.btvm.BROADCAST_TYPE_KEY";
     public static final String BROADCAST_ACTION = "com.bluetoothvehiclemonitor.btvm.BROADCAST_ACTION";

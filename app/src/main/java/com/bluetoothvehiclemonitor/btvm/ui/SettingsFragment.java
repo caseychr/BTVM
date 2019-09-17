@@ -37,6 +37,8 @@ public class SettingsFragment extends Fragment {
     RecyclerView mRecyclerView;
     Button mUpdateBtn;
 
+    private boolean f = false;
+
     public SettingsViewModel mSettingsViewModel;
 
     @Override
@@ -50,13 +52,13 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_settings, container, false);
+        mIsMetric = mView.findViewById(R.id.switch_metric);
         BaseActivity.setTitle(getActivity(), R.string.settings_title);
         initWidgets();
         return mView;
     }
 
     private void initWidgets() {
-        mIsMetric = mView.findViewById(R.id.switch_metric);
         mIsMetric.setChecked(mSettingsViewModel.isMetric());
         mIsMetric.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -75,20 +77,24 @@ public class SettingsFragment extends Fragment {
         initRecyclerView();
     }
 
+
+
     private void initRecyclerView() {
         mRecyclerView = mView.findViewById(R.id.recycler_view_devices);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if(mDeviceAdapter == null) {
-            mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices());
+            mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices(), getContext());
             mRecyclerView.setAdapter(mDeviceAdapter);
         }
         mDeviceAdapter.notifyDataSetChanged();
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                BaseActivity.sBluetoothDevice = mSettingsViewModel.getDevices().get(position);
-                mSettingsViewModel.setDevice(BaseActivity.sBluetoothDevice.getName(), BaseActivity.sBluetoothDevice.getAddress());
-                Toast.makeText(getActivity(), "Connecting to "+BaseActivity.sBluetoothDevice.getName(), Toast.LENGTH_LONG).show();
+                if(BaseActivity.mStartPressed) {
+                    BaseActivity.sBluetoothDevice = mSettingsViewModel.getDevices().get(position);
+                    mSettingsViewModel.setDevice(BaseActivity.sBluetoothDevice.getName(), BaseActivity.sBluetoothDevice.getAddress());
+                    Toast.makeText(getActivity(), "Connecting to "+BaseActivity.sBluetoothDevice.getName(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
