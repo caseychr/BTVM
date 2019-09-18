@@ -308,7 +308,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     }
 
     private void subscribeObservers() {
-        mHomeViewModel.getTripById().observe(this, new Observer<Trip>() {
+        mHomeViewModel.getLatestTrip().observe(this, new Observer<Trip>() {
             @Override
             public void onChanged(Trip trip) {
                 if(BaseActivity.mStartPressed) {

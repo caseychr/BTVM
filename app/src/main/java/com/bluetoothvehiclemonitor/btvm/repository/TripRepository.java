@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.bluetoothvehiclemonitor.btvm.data.local.room.BTVMDatabase;
-import com.bluetoothvehiclemonitor.btvm.data.local.room.BluetoothPIDDao;
 import com.bluetoothvehiclemonitor.btvm.data.local.room.TripDao;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
@@ -30,22 +29,22 @@ public class TripRepository {
     }
 
     public void insertTrip(Trip trip) {
-        //mTripDao.insert(trip);
         new InsertTripAsyncTask(mTripDao).execute(trip);
     }
 
     public void updateTrip(Trip trip) {
-        //mTripDao.update(trip);
         new UpdateTripAsyncTask(mTripDao).execute(trip);
     }
 
-    public LiveData<Trip> getTripById() {
-        return mTripDao.getTripById();
+    public LiveData<Trip> getLatestTrip() {
+        return mTripDao.getLatesTrip();
     }
 
     public LiveData<List<Trip>> getAllTrips() {
         return mTripDao.getAllTrips();
     }
+
+
 
     public static class InsertTripAsyncTask extends AsyncTask<Trip, Void, Void> {
         private TripDao tripDao;
