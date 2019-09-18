@@ -41,8 +41,8 @@ public class HomeViewModel extends AndroidViewModel {
         mBluetoothPIDRepository.insertPID(bluetoothPID);
     }
 
-    public LiveData<Trip> getTripById() {
-        return mTripRepository.getTripById();
+    public LiveData<Trip> getLatestTrip() {
+        return mTripRepository.getLatestTrip();
     }
 
     public LiveData<List<Trip>> getAllTrips() {

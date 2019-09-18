@@ -34,6 +34,8 @@ public class MetricsRepository {
         new InsertMetricsAsyncTask(mMetricsDao).execute(metrics);
     }
 
+
+    
     public List<Metrics> getAllMetrics() {
         return mMetricsDao.getAllMetrics();
     }

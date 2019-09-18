@@ -30,6 +30,10 @@ public class BluetoothPIDRepository {
         return instance;
     }
 
+    public LiveData<List<BluetoothPID>> getAllPIDs() {
+        return mBluetoothPIDDao.getAllPIDs();
+    }
+
     public LiveData<List<BluetoothPID>> getPIDsByTripId(int id) {
         return mBluetoothPIDDao.getPIDsByTripId(id);
     }

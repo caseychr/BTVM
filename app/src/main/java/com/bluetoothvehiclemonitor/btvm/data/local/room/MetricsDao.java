@@ -16,12 +16,6 @@ public interface MetricsDao {
     @Insert
     void insert(Metrics metric);
 
-    @Update
-    void update(Metrics metric);
-
-    @Delete
-    void delete(Metrics metric);
-
     @Query("SELECT * FROM metrics_table ORDER BY mId")
     List<Metrics> getAllMetrics();
 
