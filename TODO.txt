@@ -32,15 +32,15 @@ Modules:
 
 HOME FRAGMENT
  - Animations -> From Home to Settings and back
- - Fix no LatLng on initial load and crash
- - save states
 
 BLUETOOTH LIBRARY
  - Fix Bluetooth Library - Fix POLLING
  - Timeout error for not correct bluetooth device
+ - Handle Unable to Connect - Show BottomSheetDialog when we cannot connect
 
 METRICS FRAGMENT/ADAPTER
  - Fix Lapse in UI Update
+ - Do and handle check for valid Metrics
 
 NEW IMPLEMENTATION
  - LiveData - implement

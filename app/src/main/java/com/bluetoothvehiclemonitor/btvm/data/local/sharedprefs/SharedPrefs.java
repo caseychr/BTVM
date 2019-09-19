@@ -15,6 +15,7 @@ public class SharedPrefs {
     private static final String PREF_LAST_KNOWN_LON = "PREF_LAST_KNOWN_LON";
     private static final String PREF_BT_DEVICE_CONNECTED = "PREF_BT_DEVICE_CONNECTED";
     private static final String PREF_METRIC = "PREF_METRIC";
+    private static final String PREF_RUNNING = "PREF_RUNNING";
 
     public SharedPreferences mSharedPrefs;
     public SharedPreferences.Editor mEditor;
@@ -44,17 +45,17 @@ public class SharedPrefs {
         mEditor.commit();
     }
 
-    public String[] getLastLatLon() {
-        String[] lastLatLon = new String[2];
-        lastLatLon[0] = mSharedPrefs.getString(PREF_LAST_KNOWN_LAT, null);
-        lastLatLon[1] = mSharedPrefs.getString(PREF_LAST_KNOWN_LON, null);
+    public Double[] getLastLatLon() {
+        Double[] lastLatLon = new Double[2];
+        lastLatLon[0] = Double.valueOf(mSharedPrefs.getString(PREF_LAST_KNOWN_LAT, null));
+        lastLatLon[1] = Double.valueOf(mSharedPrefs.getString(PREF_LAST_KNOWN_LON, null));
         return lastLatLon;
     }
 
-    public void setLatLon(String lat, String lon) {
+    public void setLastLatLon(double lat, double lon) {
         mEditor = mSharedPrefs.edit();
-        mEditor.putString(PREF_LAST_KNOWN_LAT, lat);
-        mEditor.putString(PREF_LAST_KNOWN_LON, lon);
+        mEditor.putString(PREF_LAST_KNOWN_LAT, String.valueOf(lat));
+        mEditor.putString(PREF_LAST_KNOWN_LON, String.valueOf(lon));
         mEditor.commit();
     }
 
@@ -75,6 +76,16 @@ public class SharedPrefs {
     public void setIsMetric(boolean isMetric) {
         mEditor = mSharedPrefs.edit();
         mEditor.putBoolean(PREF_METRIC, isMetric);
+        mEditor.commit();
+    }
+
+    public boolean getIsRunning() {
+        return mSharedPrefs.getBoolean(PREF_RUNNING, false);
+    }
+
+    public void setIsRunning(boolean isRunning) {
+        mEditor = mSharedPrefs.edit();
+        mEditor.putBoolean(PREF_RUNNING, isRunning);
         mEditor.commit();
     }
 }

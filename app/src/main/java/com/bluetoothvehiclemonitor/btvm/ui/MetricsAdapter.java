@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluetoothvehiclemonitor.btvm.R;
@@ -12,9 +11,6 @@ import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
-import com.bluetoothvehiclemonitor.btvm.viewmodels.MetricsViewModel;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 

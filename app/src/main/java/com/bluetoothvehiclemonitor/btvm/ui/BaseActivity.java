@@ -13,7 +13,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public static BluetoothDevice sBluetoothDevice;
     public static Location sCurrentLocation;
-    public static boolean mStartPressed;
     public static List<Location> mPolylines = new ArrayList<>();
 
     public static void setTitle(Activity activity, int title) {

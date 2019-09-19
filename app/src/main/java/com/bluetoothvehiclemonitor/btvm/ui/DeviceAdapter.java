@@ -28,8 +28,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     Context mContext;
     List<BluetoothDevice> mDevices;
     OnItemClickListener mOnItemClickListener;
-    private boolean d = false;
-
     int lastCheckedPosition = -1;
 
     public DeviceAdapter(List<BluetoothDevice> devices, Context context) {
@@ -78,7 +76,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         BluetoothDevice bluetoothDevice = mDevices.get(i);
         viewHolder.mDeviceName.setText(bluetoothDevice.getName());
         viewHolder.mMacAddress.setText(bluetoothDevice.getAddress());
-        Log.i(TAG, "pos "+lastCheckedPosition);
         viewHolder.mChecked.setVisibility((lastCheckedPosition == viewHolder.getAdapterPosition()) ? View.VISIBLE: View.INVISIBLE);
     }
 
@@ -104,7 +101,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
         @Override
         public void onClick(View view) {
-            if(BaseActivity.mStartPressed) {
+            if(SharedPrefs.getInstance(mContext).getIsRunning()) {
                 Toast.makeText(mContext, "Bluetooth is already running. Cannot change devices", Toast.LENGTH_LONG).show();
             }else {
                 lastCheckedPosition = getAdapterPosition();

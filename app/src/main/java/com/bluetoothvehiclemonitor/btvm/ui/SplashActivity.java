@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
@@ -57,21 +58,18 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mDialog = new BottomSheetDialog();
 
         mSplashViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
-        // Check perms and capability
         checkPerms();
-        // TODO need to handle going to BT settings and coming back to app. Also need to handle onPaused state when on SplashActivity
     }
 
-    // Move to MainActivity
     private void onPermissionSuccess(){
-        mProgressBar.setVisibility(View.GONE);
         getDeviceLocation();
+        SharedPrefs.getInstance(this).setIsRunning(false);
+        mProgressBar.setVisibility(View.GONE);
         Intent intent = MainActivity.newIntent(this);
         startActivity(intent);
         finish();
     }
 
-    // Show popupwindow of paired devices when one is not chosen
     private void initDeviceWindow() {
         mDeviceView = LayoutInflater.from(getApplicationContext())
                 .inflate(R.layout.popup_device_picker, mViewGroup, false);
@@ -157,14 +155,20 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if(task.isSuccessful()) { // We send currentLocation to broadcastLocation and then check for NULL
-                        //found location!
                         sCurrentLocation = (Location) task.getResult();
+                        SharedPrefs.getInstance(SplashActivity.this)
+                                .setLastLatLon(sCurrentLocation.getLatitude(), sCurrentLocation.getLongitude());
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    // something happened no location found
+                    Double[] prefsLatLon = SharedPrefs.getInstance(SplashActivity.this).getLastLatLon();
+                    sCurrentLocation = null;
+                    sCurrentLocation.setLatitude(prefsLatLon[0]);
+                    sCurrentLocation.setLongitude(prefsLatLon[1]);
+                Toast.makeText(SplashActivity.this, "Unable to retrieve current location. Using last known location\n"
+                        + sCurrentLocation.getLatitude()+", "+sCurrentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (SecurityException e) {
