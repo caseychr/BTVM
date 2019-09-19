@@ -1,7 +1,6 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,8 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
-import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SettingsViewModel;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,8 +29,6 @@ public class SettingsFragment extends Fragment {
     Switch mIsMetric;
     RecyclerView mRecyclerView;
     Button mUpdateBtn;
-
-    private boolean f = false;
 
     public SettingsViewModel mSettingsViewModel;
 
@@ -83,7 +77,7 @@ public class SettingsFragment extends Fragment {
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                if(BaseActivity.mStartPressed) {
+                if(SharedPrefs.getInstance(getContext()).getIsRunning()) {
                     BaseActivity.sBluetoothDevice = mSettingsViewModel.getDevices().get(position);
                     mSettingsViewModel.setDevice(BaseActivity.sBluetoothDevice.getName(), BaseActivity.sBluetoothDevice.getAddress());
                     Toast.makeText(getActivity(), "Connecting to "+BaseActivity.sBluetoothDevice.getName(), Toast.LENGTH_LONG).show();

@@ -17,8 +17,8 @@ public class MainViewModel extends AndroidViewModel {
         mApplication = application;
     }
 
-    public void setLastLatLon(String lat, String lon) {
-        SharedPrefs.getInstance(mApplication.getApplicationContext()).setLatLon(lat, lon);
+    public void setLastLatLon(Double lat, Double lon) {
+        SharedPrefs.getInstance(mApplication.getApplicationContext()).setLastLatLon(lat, lon);
     }
 
     public void updateLatLonList() {

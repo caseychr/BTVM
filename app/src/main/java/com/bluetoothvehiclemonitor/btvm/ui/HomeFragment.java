@@ -24,7 +24,6 @@ import com.bluetoothvehiclemonitor.btvm.services.GPSService;
 import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
-import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
 import com.driverapp.bluetoothandroidlibrary.MessageUpdate;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,13 +43,6 @@ import androidx.lifecycle.ViewModelProviders;
 public class HomeFragment extends Fragment implements OnMapReadyCallback, MessageUpdate {
     private static final String TAG = "HomeFragment";
 
-    /**
-     * TODO
-     * 1) Fix Bluetooth Library -> not polling and updating correctly
-     * 2) Refactor polylines update to be cleaner
-     * 5) Animation from BT card to SettingsFragment
-     */
-
     View mView;
     ImageView mStartBtn;
     TextView mBTRunning;
@@ -69,6 +61,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     GoogleMap mGoogleMap;
 
     private HomeViewModel mHomeViewModel;
+    private boolean mIsRunning = false;
     Intent mBluetoothService;
     Intent mGPSService;
 
@@ -87,8 +80,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         getActivity().registerReceiver(mLocationReceiver, mIntentFilter);
         mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mGPSService = GPSService.newIntent(getActivity());
-        Log.i(TAG, "Device "+SharedPrefs.getInstance(getActivity()).getDevice()[0]+", "+
-                SharedPrefs.getInstance(getActivity()).getDevice()[1]);
+        mIsRunning = SharedPrefs.getInstance(getContext()).getIsRunning();
     }
 
     @Nullable
@@ -117,14 +109,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
             MapsUtil.animateMap(mGoogleMap, new LatLng(BaseActivity.sCurrentLocation.getLatitude(),
                     BaseActivity.sCurrentLocation.getLongitude()), 16f);
         } else {
-            Log.i(TAG, "No location retrieved");
             MapsUtil.animateMap(mGoogleMap, new LatLng(33.900396, -84.277227), 16f);
         }
     }
 
-    /**
-     * Create google map
-     */
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -158,15 +146,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         mAirFlowTv = mView.findViewById(R.id.tv_airflow);
         mRPMTv = mView.findViewById(R.id.tv_engine);
         setUnits();
+        if(mIsRunning) {
+            mStartTv.setText(getString(R.string.btn_stop));
+        } else {
+            mStartTv.setText(getString(R.string.btn_start));
+        }
 
         mStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mStartTv.getText().toString().equalsIgnoreCase("Start")) {
-                    BaseActivity.mStartPressed = true;
+                if(!mIsRunning) {
+                    SharedPrefs.getInstance(getContext()).setIsRunning(true);
+                    mIsRunning = true;
                     startPressed();
-                } else if (mStartTv.getText().toString().equalsIgnoreCase("Stop")) {
-                    BaseActivity.mStartPressed = false;
+                } else {
+                    SharedPrefs.getInstance(getContext()).setIsRunning(false);
+                    mIsRunning = false;
                     stopPressed();
                 }
             }
@@ -174,19 +169,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     }
 
     private void startPressed() {
-        mStartTv.setText("STOP");
+        mStartTv.setText(getString(R.string.btn_stop));
         mGoogleMap.clear();
 
         mTrip = new Trip(DateUtil.getStringFromCurrentDate());
         mHomeViewModel.insertTrip(mTrip);
+
+        /*
+        ////////// TESTING TRIPS ////////////////
         List<Trip> trips = TestingUtil.getMockTrips();
-        ////////// TESTING TRIPS
-        /*for(Trip t:trips) {
+        for(Trip t:trips) {
             mHomeViewModel.insertTrip(t);
         }*/
-        Log.i(TAG, BaseActivity.sBluetoothDevice.getName());
         mTrip.setTimeStamp(DateUtil.getStringFromCurrentDate());
-
         updatePolylineList(BaseActivity.sCurrentLocation);
         mBluetoothService = BluetoothService.newIntent(getContext(),
                 BaseActivity.sBluetoothDevice, HomeFragment.this);
@@ -197,9 +192,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     }
 
     private void stopPressed() {
-        mStartTv.setText("START");
+        mStartTv.setText(getString(R.string.btn_start));
         MapsUtil.animateMapWithBounds(HomeFragment.this, mGoogleMap, mLocationList);
-        Log.i(TAG, "Stopping Services");
         GPSService.stopLocationPolling();
         getActivity().stopService(mGPSService);
         getActivity().stopService(mBluetoothService);
@@ -222,7 +216,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     private void updatePolylineList(Location location) {
         mLocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
         MapsUtil.updatePolylines(mGoogleMap, mLocationList);
-        //mHomeViewModel.updateTrip(mTrip);
+        mHomeViewModel.updateTrip(mTrip);
 
     }
     @Override
@@ -302,7 +296,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         mHomeViewModel.getLatestTrip().observe(this, new Observer<Trip>() {
             @Override
             public void onChanged(Trip trip) {
-                if(BaseActivity.mStartPressed) {
+                if(SharedPrefs.getInstance(getContext()).getIsRunning()) {
                     if(trip.getLatLngs() != null) {
                         mLocationList.clear();
                         mLocationList = trip.getLatLngs();
@@ -319,15 +313,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "HOME FRAGMENT IN RECEIVER");
             if(intent.hasExtra(GPSService.BROADCAST_TYPE_KEY)) {
                 if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NEW_LOCATION_BROADCAST)) {
-                    Log.i(TAG, "received new location");
                     Location location = intent.getParcelableExtra(GPSService.CURRENT_LOCATION_KEY);
                     BaseActivity.sCurrentLocation = location;
+                    SharedPrefs.getInstance(getContext()).setLastLatLon(location.getLatitude(), location.getLongitude());
                     updatePolylineList(location);
                 } else if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NO_LOCATION_BROADCAST)) {
-                    Log.i(TAG, "NO new location");
                     Toast.makeText(context, "We are not receiving new location", Toast.LENGTH_SHORT).show();
                 }
             }
