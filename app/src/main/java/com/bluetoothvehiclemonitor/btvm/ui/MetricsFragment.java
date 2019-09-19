@@ -67,9 +67,11 @@ public class MetricsFragment extends Fragment {
         mNoMetrics = mView.findViewById(R.id.metrics_none);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         Log.i(TAG, "initRecycler "+mTripList.toString());
-        mMetricsAdapter = new MetricsAdapter(mTripList, getContext(), mMetricsViewModel.isMetric());
-        mRecyclerView.setAdapter(mMetricsAdapter);
-        mMetricsAdapter.notifyDataSetChanged();
+        if(checkIfMetricsAreValid(mTripList)) {
+            mMetricsAdapter = new MetricsAdapter(mTripList, getContext(), mMetricsViewModel.isMetric());
+            mRecyclerView.setAdapter(mMetricsAdapter);
+            mMetricsAdapter.notifyDataSetChanged();
+        }
         Log.i(TAG, mTripList.toString());
         if(mTripList.isEmpty()) {
             mRecyclerView.setVisibility(View.INVISIBLE);
@@ -85,9 +87,27 @@ public class MetricsFragment extends Fragment {
             @Override
             public void onChanged(List<Trip> trips) {
                 mTripList = trips;
-                mMetricsAdapter.setTrips(mTripList);
+                if(checkIfMetricsAreValid(mTripList)) {
+                    mMetricsAdapter.setTrips(mTripList);
+                }
                 Log.i(TAG, mTripList.toString());
             }
         });
+    }
+
+    //TODO need to check if the current trip in process is valid. if not remove it from the recyclerview until it is
+    private boolean checkIfMetricsAreValid(List<Trip> trips) {
+        boolean valid = false;
+        if(BaseActivity.mStartPressed) {
+            if(!trips.isEmpty() && (trips.get(0).getMetrics().getDistance() != null && trips.get(0).getMetrics().getVehicleSpeed() != null &&
+                    trips.get(0).getMetrics().getEngineRPM() != null && trips.get(0).getMetrics().getCoolantTemp() != null &&
+                    trips.get(0).getMetrics().getAirFlow() != null)) {
+                valid = true;
+            }
+        }
+        else {
+            valid = true;
+        }
+        return valid;
     }
 }
