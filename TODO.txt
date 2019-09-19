@@ -32,15 +32,15 @@ Modules:
 
 HOME FRAGMENT
  - Animations -> From Home to Settings and back
+ - Fix no LatLng on initial load and crash
+ - save states
 
 BLUETOOTH LIBRARY
  - Fix Bluetooth Library - Fix POLLING
  - Timeout error for not correct bluetooth device
 
 METRICS FRAGMENT/ADAPTER
- - Get and display Metric units
- - Retrieve metrics from Room
- - Build retrofit and GET/Display static map for each Trip
+ - Fix Lapse in UI Update
 
 NEW IMPLEMENTATION
  - LiveData - implement
@@ -61,4 +61,3 @@ Google Maps
  - 7) Unit Testing
  - 8) Databinding
  - 9) LiveData
- - 10) Retrofit for static maps

@@ -37,12 +37,7 @@ public class BluetoothService extends IntentService {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         mBluetoothController.init(mContext);
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mBluetoothController.exit();
-    }
 }

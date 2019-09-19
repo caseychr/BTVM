@@ -1,6 +1,7 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,14 +9,17 @@ import android.widget.TextView;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
+import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.MetricsViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +38,7 @@ public class MetricsFragment extends Fragment {
     RecyclerView mRecyclerView;
     MetricsAdapter mMetricsAdapter;
 
-    List<Metrics> mMetricsList;
+    List<Trip> mTripList = new ArrayList<>();
     TextView mNoMetrics;
 
     MetricsViewModel mMetricsViewModel;
@@ -52,8 +56,9 @@ public class MetricsFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_metrics, container, false);
         BaseActivity.setTitle(getActivity(), R.string.metrics_title);
-        mMetricsList = TestingUtil.getMockMetrics();
+        //mMetricsList = TestingUtil.getMockMetrics();
         initRecycler();
+        subscribeObservers();
         return mView;
     }
 
@@ -61,15 +66,28 @@ public class MetricsFragment extends Fragment {
         mRecyclerView = mView.findViewById(R.id.metrics_recycler_view);
         mNoMetrics = mView.findViewById(R.id.metrics_none);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mMetricsAdapter = new MetricsAdapter(mMetricsList, getContext());
+        Log.i(TAG, "initRecycler "+mTripList.toString());
+        mMetricsAdapter = new MetricsAdapter(mTripList, getContext(), mMetricsViewModel.isMetric());
         mRecyclerView.setAdapter(mMetricsAdapter);
         mMetricsAdapter.notifyDataSetChanged();
-        if(mMetricsList.isEmpty()) {
+        Log.i(TAG, mTripList.toString());
+        if(mTripList.isEmpty()) {
             mRecyclerView.setVisibility(View.INVISIBLE);
             mNoMetrics.setVisibility(View.VISIBLE);
         } else {
             mRecyclerView.setVisibility(View.VISIBLE);
             mNoMetrics.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void subscribeObservers() {
+        mMetricsViewModel.getAllTrips().observe(this, new Observer<List<Trip>>() {
+            @Override
+            public void onChanged(List<Trip> trips) {
+                mTripList = trips;
+                mMetricsAdapter.setTrips(mTripList);
+                Log.i(TAG, mTripList.toString());
+            }
+        });
     }
 }

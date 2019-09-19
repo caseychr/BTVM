@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +49,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        getDeviceLocation();
         mParent = findViewById(R.id.splash);
         mViewGroup = findViewById(android.R.id.content);
         mSpashView = findViewById(R.id.img_splash);
@@ -67,6 +65,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     // Move to MainActivity
     private void onPermissionSuccess(){
         mProgressBar.setVisibility(View.GONE);
+        getDeviceLocation();
         Intent intent = MainActivity.newIntent(this);
         startActivity(intent);
         finish();
@@ -81,7 +80,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mRecyclerView = mDeviceView.findViewById(R.id.device_list_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if(mDeviceAdapter == null){
-            Log.i(TAG, String.valueOf(mSplashViewModel.getDevices().size()));
             mDeviceAdapter = new DeviceAdapter(mSplashViewModel.getDevices(), getApplicationContext());
             mRecyclerView.setAdapter(mDeviceAdapter);
         }
@@ -92,8 +90,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 BluetoothDevice device = mSplashViewModel.mDevices.get(position);
                 SharedPrefs.getInstance(getApplicationContext()).setDevice(device.getName(), device.getAddress());
                 BaseActivity.sBluetoothDevice = device;
-                Log.i(TAG, ""+BaseActivity.sBluetoothDevice.getName());
-                Log.i(TAG, ""+SharedPrefs.getInstance(getApplicationContext()).getDevice().toString());
                 checkPerms();
                 mDeviceWindow.dismiss();
             }
@@ -106,9 +102,11 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
             mDialog.show(getSupportFragmentManager(), "error");
         } else if (!mSplashViewModel.checkBluetoothRequirements(this)){
             if(mSplashViewModel.getAllPermissions(this)) {
+                getDeviceLocation();
                 onPermissionSuccess();
             }
         } else {
+            getDeviceLocation();
             onPermissionSuccess();
         }
     }
@@ -119,6 +117,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mSplashViewModel.getOnRequestPermissionsResult(requestCode, permissions, grantResults);
         if(PermissionsUtil.mLocationPermissionGranted){
+            getDeviceLocation();
             onPermissionSuccess();
         }
     }
@@ -159,10 +158,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 public void onComplete(@NonNull Task task) {
                     if(task.isSuccessful()) { // We send currentLocation to broadcastLocation and then check for NULL
                         //found location!
-                        Log.i(TAG, "Does this RUN???");
                         sCurrentLocation = (Location) task.getResult();
-                        //mMainViewModel.setLastLatLon(String.valueOf(sCurrentLocation.getLatitude()),
-                          //      String.valueOf(sCurrentLocation.getLongitude()));
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {

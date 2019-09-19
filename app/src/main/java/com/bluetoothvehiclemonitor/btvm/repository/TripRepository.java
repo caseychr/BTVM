@@ -37,7 +37,7 @@ public class TripRepository {
     }
 
     public LiveData<Trip> getLatestTrip() {
-        return mTripDao.getLatesTrip();
+        return mTripDao.getLatestTrip();
     }
 
     public LiveData<List<Trip>> getAllTrips() {

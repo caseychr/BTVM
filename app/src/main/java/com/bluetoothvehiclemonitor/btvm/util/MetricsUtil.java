@@ -1,14 +1,18 @@
 package com.bluetoothvehiclemonitor.btvm.util;
 
+import android.util.Log;
+
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
+import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
 import java.util.List;
 
 public class MetricsUtil {
+    private static final String TAG = "MetricsUtil";
 
-    public static Metrics getOverallMetrics(List<Metrics> metricsList) {
-        if(metricsList == null) {
+    public static Metrics getOverallMetrics(List<Trip> trips) {
+        if(trips == null) {
             return null;
         } else {
             Metrics metrics;
@@ -17,24 +21,25 @@ public class MetricsUtil {
             float coolant = 0;
             float speed = 0;
             int distance = 0;
-            for(int i=0;i<metricsList.size();i++) {
-                airflow += Float.parseFloat(metricsList.get(i).getAirFlow());
-                engineRPM += Float.parseFloat(metricsList.get(i).getEngineRPM());
-                coolant += Float.parseFloat(metricsList.get(i).getCoolantTemp());
-                speed += Float.parseFloat(metricsList.get(i).getVehicleSpeed());
-                distance += Float.parseFloat(metricsList.get(i).getDistance());
+            for(int i=0;i<trips.size();i++) {
+
+                airflow += Float.parseFloat(trips.get(i).getMetrics().getAirFlow());
+                engineRPM += Float.parseFloat(trips.get(i).getMetrics().getEngineRPM());
+                coolant += Float.parseFloat(trips.get(i).getMetrics().getCoolantTemp());
+                speed += Float.parseFloat(trips.get(i).getMetrics().getVehicleSpeed());
+                distance += Float.parseFloat(trips.get(i).getMetrics().getDistance());
             }
-            airflow = airflow/metricsList.size();
-            engineRPM = engineRPM/metricsList.size();
-            coolant = coolant/metricsList.size();
-            speed = speed/metricsList.size();
-            metrics = new Metrics(0, String.valueOf(distance), String.valueOf(airflow), String.valueOf(engineRPM),
+            airflow = airflow/trips.size();
+            engineRPM = engineRPM/trips.size();
+            coolant = coolant/trips.size();
+            speed = speed/trips.size();
+            metrics = new Metrics( String.valueOf(distance), String.valueOf(airflow), String.valueOf(engineRPM),
                     String.valueOf(coolant), String.valueOf(speed));
             return metrics;
         }
     }
 
-    public static Metrics getTripMetrics(int trip, List<BluetoothPID> bluetoothPIDS) {
+    public static Metrics getTripMetrics(List<BluetoothPID> bluetoothPIDS) {
         if(bluetoothPIDS == null) {
             return null;
         } else {
@@ -55,8 +60,8 @@ public class MetricsUtil {
             engineRPM = engineRPM/bluetoothPIDS.size();
             coolant = coolant/bluetoothPIDS.size();
             speed = speed/bluetoothPIDS.size();
-            metrics = new Metrics(trip, String.valueOf(distance), String.valueOf(airflow), String.valueOf(engineRPM),
-                    String.valueOf(coolant), String.valueOf(speed));
+            metrics = new Metrics(String.valueOf(distance), String.valueOf(airflow), String.valueOf(engineRPM),
+                    String.valueOf(coolant), String.valueOf(speed), bluetoothPIDS);
             return metrics;
         }
     }

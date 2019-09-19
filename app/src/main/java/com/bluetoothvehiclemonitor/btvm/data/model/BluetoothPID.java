@@ -2,17 +2,15 @@ package com.bluetoothvehiclemonitor.btvm.data.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "bluetoothPID_table")
 public class BluetoothPID {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     private int mId;
-    private int mTripId;
     private float mDistance;
     private float mVehicleSpeed;
     private float mCoolantTemp;
@@ -24,9 +22,8 @@ public class BluetoothPID {
     }
 
     @Ignore
-    public BluetoothPID(int tripId, float distance, float vehicleSpeed, float coolantTemp, float airFlow,
+    public BluetoothPID(float distance, float vehicleSpeed, float coolantTemp, float airFlow,
             float engineRPM) {
-        mTripId = tripId;
         mDistance = distance;
         mVehicleSpeed = vehicleSpeed;
         mCoolantTemp = coolantTemp;
@@ -40,14 +37,6 @@ public class BluetoothPID {
 
     public void setId(int id) {
         mId = id;
-    }
-
-    public int getTripId() {
-        return mTripId;
-    }
-
-    public void setTripId(int tripId) {
-        mTripId = tripId;
     }
 
     public float getDistance() {
@@ -88,5 +77,17 @@ public class BluetoothPID {
 
     public void setEngineRPM(float engineRPM) {
         mEngineRPM = engineRPM;
+    }
+
+    @Override
+    public String toString() {
+        return "BluetoothPID{" +
+                "mId=" + mId +
+                ", mDistance=" + mDistance +
+                ", mVehicleSpeed=" + mVehicleSpeed +
+                ", mCoolantTemp=" + mCoolantTemp +
+                ", mAirFlow=" + mAirFlow +
+                ", mEngineRPM=" + mEngineRPM +
+                '}';
     }
 }

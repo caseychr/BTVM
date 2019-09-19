@@ -1,6 +1,5 @@
 package com.bluetoothvehiclemonitor.btvm.data.local.room;
 
-import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public interface TripDao {
     LiveData<List<Trip>> getAllTrips();
 
     @Query("SELECT * FROM trip ORDER BY mId DESC LIMIT 1")
-    LiveData<Trip> getLatesTrip();
+    LiveData<Trip> getLatestTrip();
 
     @Query("SELECT * FROM trip WHERE mId = :id")
     LiveData<Trip> getTripById(int id);

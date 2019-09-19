@@ -27,9 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CardStyle"
-            android:textSize="12dp"
+            android:textSize="10dp"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="10dp" android:text="Total Distance"
+            android:layout_marginTop="18dp" android:text="Total Distance"
             app:layout_constraintStart_toEndOf="@+id/img_metric_static_map" app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/tv_metric_airflow"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content" android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
             style="@style/CardStyle"
-            android:textSize="12dp"
+            android:textSize="10dp"
             android:text="Avg Airflow" app:layout_constraintStart_toEndOf="@+id/img_metric_static_map"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_distance"/>
         <TextView
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_marginStart="4dp"
             style="@style/CardStyle"
-            android:textSize="12dp"
+            android:textSize="10dp"
             android:layout_marginTop="10dp"
             android:text="Avg Coolant Temp" app:layout_constraintStart_toEndOf="@+id/img_metric_static_map"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_airflow"/>
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_marginStart="4dp"
             style="@style/CardStyle"
-            android:textSize="12dp"
+            android:textSize="10dp"
             android:layout_marginTop="10dp"
             android:text="Avg RPM" app:layout_constraintStart_toEndOf="@+id/img_metric_static_map"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_coolant"/>
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CardStyle"
-            android:textSize="12dp"
+            android:textSize="10dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
             android:text="Avg Speed" app:layout_constraintStart_toEndOf="@+id/img_metric_static_map"
@@ -78,7 +78,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:text="Wed 01/12/2019 12:24PM"
-            android:textSize="12dp" app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="10dp" app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/tv_metric_speed"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="2dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_metric_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_metric_coolant" app:layout_constraintTop_toTopOf="parent">
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="1230"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
             <TextView
@@ -109,7 +109,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="1230"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_distance_num"/>
             <TextView
@@ -119,7 +119,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="1230"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_airflow_num"/>
             <TextView
@@ -129,7 +129,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="1230"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_coolant_num"/>
             <TextView
@@ -140,7 +140,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="1230"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_rpm_num"/>
 
@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="KMPH"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_distance_num"
                 app:layout_constraintTop_toTopOf="parent"/>
             <TextView
@@ -161,7 +161,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="KMPH"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_airflow_num"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_distance_unit"/>
             <TextView
@@ -171,7 +171,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="KMPH"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_coolant_num"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_airflow_unit"/>
             <TextView
@@ -180,8 +180,8 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
-                android:text="KMPH"
-                android:textSize="12dp"
+                android:text="RPM"
+                android:textSize="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_rpm_num"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_coolant_unit"/>
             <TextView
@@ -192,7 +192,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="KMPH"
-                android:textSize="12dp"
+                android:textSize="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_rpm_num"
                 app:layout_constraintTop_toBottomOf="@+id/tv_metric_rpm_unit"/>
 

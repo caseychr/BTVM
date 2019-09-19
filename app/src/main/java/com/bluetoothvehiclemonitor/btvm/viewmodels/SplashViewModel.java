@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.provider.Settings;
-import android.util.Log;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
@@ -62,6 +61,19 @@ public class SplashViewModel extends AndroidViewModel {
                 .mSharedPrefs.contains(PREF_BT_DEVICE_NAME);
     }
 
+    private void setBluetoothDevice() {
+        if(mBluetoothDeviceArray == null) {
+            mBluetoothDeviceArray = new String[2];
+        }
+        String name = mBluetoothDeviceArray[0];
+        String address = mBluetoothDeviceArray[1];
+        for(BluetoothDevice device:mDevices) {
+            if(device.getName().equals(name) && device.getAddress().equals(address)) {
+                BaseActivity.sBluetoothDevice = device;
+            }
+        }
+    }
+
     public boolean checkBluetoothRequirements(Activity activity) {
         if(mAdapter == null) { // is BT Capable?
             mDialogTv = activity.getString(R.string.perms_error_not_bt_capable);
@@ -77,6 +89,8 @@ public class SplashViewModel extends AndroidViewModel {
                         }
                     } else if(mAdapter.getBondedDevices().size() == 1) {
                         BaseActivity.sBluetoothDevice = mDevices.get(0);
+                        SharedPrefs.getInstance(activity).setDevice(BaseActivity.sBluetoothDevice.getName(),
+                                BaseActivity.sBluetoothDevice.getAddress());
                         if(PermissionsUtil.mLocationPermissionGranted) {
                             return true;
                         }
@@ -117,17 +131,6 @@ public class SplashViewModel extends AndroidViewModel {
 
     public List<BluetoothDevice> getDevices() {
         return mDevices;
-    }
-
-    private void setBluetoothDevice() {
-        mBluetoothDeviceArray = new String[2];
-        String name = mBluetoothDeviceArray[0];
-        String address = mBluetoothDeviceArray[1];
-        for(BluetoothDevice device:mDevices) {
-            if(device.getName().equals(name) && device.getAddress().equals(address)) {
-                BaseActivity.sBluetoothDevice = device;
-            }
-        }
     }
 
     public boolean getAllPermissions(Activity activity) {

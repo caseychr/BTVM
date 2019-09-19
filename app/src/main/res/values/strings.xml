@@ -28,20 +28,20 @@
 
     <!-- METRIC/IMPERIAL UNITS -->
     <string name="imperial_distance">MILES</string>
-    <string name="imperial_coolant">FAHRENHEIT</string>
+    <string name="imperial_coolant">°F</string>
     <string name="imperial_speed">MPH</string>
     <string name="imperial_airflow">OZ/SEC</string>
 
-    <string name="metric_distance">KILOMETERS</string>
-    <string name="metric_coolant">CELSIUS</string>
+    <string name="metric_distance">KM</string>
+    <string name="metric_coolant">°C</string>
     <string name="metric_speed">KMPH</string>
-    <string name="metric_airflow">GRAMS/SEC</string>
+    <string name="metric_airflow">GMS/SEC</string>
 
-    <string name="metric_avg_distance">AVERAGE DISTANCE</string>
-    <string name="metric_avg_coolant_temp">AVERAGE COOLANT TEMP</string>
-    <string name="metric_avg_vehicle_speed">AVERAGE SPEED</string>
-    <string name="metric_avg_airflow">AVERAGE AIRFLOW</string>
-    <string name="metric_avg_rpm">AVERAGE RPM</string>
+    <string name="metric_avg_distance">AVG DISTANCE</string>
+    <string name="metric_avg_coolant_temp">AVG COOLANT TEMP</string>
+    <string name="metric_avg_vehicle_speed">AVG SPEED</string>
+    <string name="metric_avg_airflow">AVG AIRFLOW</string>
+    <string name="metric_avg_rpm">AVG RPM</string>
 
 
 </resources>
