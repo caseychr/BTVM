@@ -1,8 +1,6 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +9,10 @@ import android.widget.TextView;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
-import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
+import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
+import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
-import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
+import com.bluetoothvehiclemonitor.btvm.viewmodels.MetricsViewModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -22,11 +21,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * TODO grab static maps from googlemaps URL
- * 1) MapInfo stored in Room needs zoom level, window size & polylines
- * 2) Need Retrofit
- */
 
 public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "MetricsAdapter";
@@ -34,13 +28,17 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static final int OVERALL = 0;
     public static final int METRIC = 1;
 
-    List<Metrics> mMetricsList;
+    boolean isMetric;
+    List<Trip> mTripList;
     Context mContext;
 
-    public MetricsAdapter(List<Metrics> metrics, Context context) {
+    public MetricsAdapter(List<Trip> metrics, Context context, boolean isMetric) {
         mContext = context;
-        mMetricsList = metrics;
-        setOverallMetric();
+        mTripList = metrics;
+        this.isMetric = isMetric;
+        if(!metrics.isEmpty()) {
+            setOverallMetric();
+        }
     }
 
     @NonNull
@@ -51,51 +49,68 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.metrics_total_list_item, parent, false);
             return new OverallMetricsViewHolder(view);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.metrics_list_item, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.metrics_list_item_no_map, parent, false);
             return new MetricsViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Metrics metrics = mMetricsList.get(position);
-        if(getItemViewType(position) == OVERALL) {
-            ((OverallMetricsViewHolder) holder).mTvDistanceNum.setText(metrics.getDistance());
-            ((OverallMetricsViewHolder) holder).mTvAirflowNum.setText(metrics.getAirFlow());
-            ((OverallMetricsViewHolder) holder).mTvCoolantNum.setText(metrics.getCoolantTemp());
-            ((OverallMetricsViewHolder) holder).mTvRPMNum.setText(metrics.getEngineRPM());
-            ((OverallMetricsViewHolder) holder).mTvSpeedNum.setText(metrics.getVehicleSpeed());
-        } else {
-            ((MetricsViewHolder) holder).mTvDistanceNum.setText(metrics.getDistance());
-            ((MetricsViewHolder) holder).mTvAirflowNum.setText(metrics.getAirFlow());
-            ((MetricsViewHolder) holder).mTvCoolantNum.setText(metrics.getCoolantTemp());
-            ((MetricsViewHolder) holder).mTvRPMNum.setText(metrics.getEngineRPM());
-            ((MetricsViewHolder) holder).mTvSpeedNum.setText(metrics.getVehicleSpeed());
 
-            RequestOptions requestOptions = new RequestOptions()
+        Trip trip = mTripList.get(position);
+        if(getItemViewType(position) == OVERALL) {
+            ((OverallMetricsViewHolder) holder).mTvDistanceNum.setText(trip.getMetrics().getDistance());
+            ((OverallMetricsViewHolder) holder).mTvAirflowNum.setText(trip.getMetrics().getAirFlow());
+            ((OverallMetricsViewHolder) holder).mTvCoolantNum.setText(trip.getMetrics().getCoolantTemp());
+            ((OverallMetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
+            ((OverallMetricsViewHolder) holder).mTvSpeedNum.setText(trip.getMetrics().getVehicleSpeed());
+
+            if(isMetric) {
+                ((OverallMetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.metric_distance);
+                ((OverallMetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.metric_speed);
+                ((OverallMetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.metric_coolant);
+                ((OverallMetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.metric_airflow);
+            } else {
+                ((OverallMetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.imperial_distance);
+                ((OverallMetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.imperial_speed);
+                ((OverallMetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.imperial_coolant);
+                ((OverallMetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.imperial_airflow);
+            }
+        } else {
+            ((MetricsViewHolder) holder).mTvDistanceNum.setText(trip.getMetrics().getDistance());
+            ((MetricsViewHolder) holder).mTvAirflowNum.setText(trip.getMetrics().getAirFlow());
+            ((MetricsViewHolder) holder).mTvCoolantNum.setText(trip.getMetrics().getCoolantTemp());
+            ((MetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
+            ((MetricsViewHolder) holder).mTvSpeedNum.setText(trip.getMetrics().getVehicleSpeed());
+
+            if(isMetric) {
+                ((MetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.metric_distance);
+                ((MetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.metric_speed);
+                ((MetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.metric_coolant);
+                ((MetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.metric_airflow);
+            } else {
+                ((MetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.imperial_distance);
+                ((MetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.imperial_speed);
+                ((MetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.imperial_coolant);
+                ((MetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.imperial_airflow);
+            }
+
+            ((MetricsViewHolder) holder).mTimeStamp.setText("Trip at "+trip.getTimeStamp());
+
+            /*RequestOptions requestOptions = new RequestOptions()
                     .placeholder(R.drawable.ic_btvm);
 
-            /*Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext())
                     .setDefaultRequestOptions(requestOptions)
-                    .load(mMetricsList.get(position).getMapImage())
+                    .load("")
                     .into(((MetricsViewHolder)holder).mStaticMap);*/
 
-            /**
-             *
-             * Testing for Byte to Bitmap & Bitmap to Byte
-             *
-             * Bitmap b = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_btvm);
-             *             byte[] bytes = ConverterUtil.getBytesFromBitmap(b);
-             *             Log.i(TAG, bytes.toString());
-             *             Bitmap bt = ConverterUtil.getBitmapFromBytes(bytes);
-             *             ((MetricsViewHolder) holder).mStaticMap.setImageBitmap(bt);
-             */
         }
     }
 
     @Override
     public int getItemCount() {
-        return mMetricsList.size();
+        return mTripList.size();
     }
 
     @Override
@@ -108,9 +123,17 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    public void setTrips(List<Trip> trips) {
+        mTripList = trips;
+        setOverallMetric();
+        notifyDataSetChanged();
+    }
+
     public void setOverallMetric() {
-        Metrics metrics = MetricsUtil.getOverallMetrics(TestingUtil.getMockMetrics());
-        mMetricsList.add(0, metrics);
+        Metrics metrics = MetricsUtil.getOverallMetrics(mTripList);
+        Trip trip = new Trip(DateUtil.getStringFromCurrentDate());
+        trip.setMetrics(metrics);
+        mTripList.add(0, trip);
     }
 
     private class OverallMetricsViewHolder extends RecyclerView.ViewHolder {
@@ -150,13 +173,15 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView mTvCoolantNum;
         TextView mTvRPMNum;
         TextView mTvSpeedNum;
-        ImageView mStaticMap;
+        //ImageView mStaticMap;
 
         TextView mTvDistanceUnit;
         TextView mTvAirflowUnit;
         TextView mTvCoolantUnit;
         TextView mTvRPMUnit;
         TextView mTvSpeedUnit;
+
+        TextView mTimeStamp;
 
         public MetricsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -165,13 +190,15 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mTvCoolantNum = itemView.findViewById(R.id.tv_metric_coolant_num);
             mTvRPMNum = itemView.findViewById(R.id.tv_metric_rpm_num);
             mTvSpeedNum = itemView.findViewById(R.id.tv_metric_speed_num);
-            mStaticMap = itemView.findViewById(R.id.img_metric_static_map);
+            //mStaticMap = itemView.findViewById(R.id.img_metric_static_map);
 
             mTvDistanceUnit = itemView.findViewById(R.id.tv_metric_distance_unit);
             mTvAirflowUnit = itemView.findViewById(R.id.tv_metric_airflow_unit);
             mTvCoolantUnit = itemView.findViewById(R.id.tv_metric_coolant_unit);
             mTvRPMUnit = itemView.findViewById(R.id.tv_metric_rpm_unit);
             mTvSpeedUnit = itemView.findViewById(R.id.tv_metric_speed_unit);
+
+            mTimeStamp = itemView.findViewById(R.id.tv_metric_date);
         }
     }
 }

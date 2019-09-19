@@ -11,7 +11,11 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
+import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
+import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SettingsViewModel;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,13 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SettingsFragment extends Fragment {
     private static final String TAG = "SettingsFragment";
-
-    /**
-     * 1) Animation from SettingsFragment to HomeFragment
-     * 2) Preset already chosen BT Device
-     * 4) Don't show doubles
-     * 5) Block device choice when already started
-     */
 
     View mView;
     DeviceAdapter mDeviceAdapter;
@@ -77,15 +74,11 @@ public class SettingsFragment extends Fragment {
         initRecyclerView();
     }
 
-
-
     private void initRecyclerView() {
         mRecyclerView = mView.findViewById(R.id.recycler_view_devices);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if(mDeviceAdapter == null) {
-            mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices(), getContext());
-            mRecyclerView.setAdapter(mDeviceAdapter);
-        }
+        mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices(), getContext());
+        mRecyclerView.setAdapter(mDeviceAdapter);
         mDeviceAdapter.notifyDataSetChanged();
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override

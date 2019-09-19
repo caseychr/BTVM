@@ -16,15 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
-import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.services.BluetoothService;
 import com.bluetoothvehiclemonitor.btvm.services.GPSService;
 import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
-import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
 import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
 import com.driverapp.bluetoothandroidlibrary.MessageUpdate;
@@ -73,12 +72,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     Intent mBluetoothService;
     Intent mGPSService;
 
-    List<Double> mLats = new ArrayList<>();
-    List<Double> mLons = new ArrayList<>();
     List<LatLng> mLocationList = new ArrayList<>();
     Trip mTrip;
-    Metrics mMetrics;
-    BluetoothPID mBluetoothPID;
 
     protected LocationReceiver mLocationReceiver;
     IntentFilter mIntentFilter;
@@ -92,6 +87,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         getActivity().registerReceiver(mLocationReceiver, mIntentFilter);
         mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mGPSService = GPSService.newIntent(getActivity());
+        Log.i(TAG, "Device "+SharedPrefs.getInstance(getActivity()).getDevice()[0]+", "+
+                SharedPrefs.getInstance(getActivity()).getDevice()[1]);
     }
 
     @Nullable
@@ -177,35 +174,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     }
 
     private void startPressed() {
-        //Change text
         mStartTv.setText("STOP");
-        // init Trip
         mGoogleMap.clear();
-        mLats.clear();
-        mLons.clear();
-        mTrip = new Trip();
+
+        mTrip = new Trip(DateUtil.getStringFromCurrentDate());
         mHomeViewModel.insertTrip(mTrip);
+        List<Trip> trips = TestingUtil.getMockTrips();
+        ////////// TESTING TRIPS
+        /*for(Trip t:trips) {
+            mHomeViewModel.insertTrip(t);
+        }*/
+        Log.i(TAG, BaseActivity.sBluetoothDevice.getName());
         mTrip.setTimeStamp(DateUtil.getStringFromCurrentDate());
+
         updatePolylineList(BaseActivity.sCurrentLocation);
-        // init BluetoothPID
-        mBluetoothPID = new BluetoothPID();
         mBluetoothService = BluetoothService.newIntent(getContext(),
                 BaseActivity.sBluetoothDevice, HomeFragment.this);
         Log.i(TAG, mTrip.getTimeStamp());
         subscribeObservers();
-        //start services
         getActivity().startService(mGPSService);
         getActivity().startService(mBluetoothService);
     }
 
     private void stopPressed() {
         mStartTv.setText("START");
-        //animate map
         MapsUtil.animateMapWithBounds(HomeFragment.this, mGoogleMap, mLocationList);
-        // stop services
         Log.i(TAG, "Stopping Services");
-        mMetrics.setTripId(mTrip.getId());
-        mHomeViewModel.insertMetrics(mMetrics);
         GPSService.stopLocationPolling();
         getActivity().stopService(mGPSService);
         getActivity().stopService(mBluetoothService);
@@ -226,15 +220,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
     }
 
     private void updatePolylineList(Location location) {
-        mLats.add(location.getLatitude());
-        mLons.add(location.getLongitude());
-        mLocationList.clear();
-        for(int i=0;i<mLats.size();i++) {
-            mLocationList.add(new LatLng(mLats.get(i), mLons.get(i)));
-        }
+        mLocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
         MapsUtil.updatePolylines(mGoogleMap, mLocationList);
-        mTrip.setLats(mLats);mTrip.setLons(mLons);
-        mHomeViewModel.updateTrip(mTrip);
+        //mHomeViewModel.updateTrip(mTrip);
 
     }
     @Override
@@ -245,10 +233,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         } else {
             mBTRunning.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
-            BluetoothPID bluetoothPID = new BluetoothPID(mTrip.getId(), Float.valueOf(mDistanceNumTv.getText().toString()),
-                    Float.valueOf(mSpeedNumTv.getText().toString()), Float.valueOf(mCoolantNumTv.getText().toString()),
-                    Float.valueOf(mAirFlowNumTv.getText().toString()), Float.valueOf(mRPMNumTv.getText().toString()));
-            mHomeViewModel.insertBTPID(TestingUtil.getMockPID());
+            if(mDistanceNumTv != null && mDistanceNumTv != null && mDistanceNumTv != null && mDistanceNumTv != null &&
+            mDistanceNumTv != null){
+                mTrip.getMetrics().getBluetoothPIDS().add(new BluetoothPID(Float.valueOf(mDistanceNumTv.getText().toString()),
+                        Float.valueOf(mSpeedNumTv.getText().toString()), Float.valueOf(mCoolantNumTv.getText().toString()),
+                        Float.valueOf(mAirFlowNumTv.getText().toString()), Float.valueOf(mRPMNumTv.getText().toString())));
+                mHomeViewModel.updateTrip(mTrip);
+            }
         }
     }
 
@@ -312,24 +303,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
             @Override
             public void onChanged(Trip trip) {
                 if(BaseActivity.mStartPressed) {
-                    if(trip.getLats() != null) {
-                        mLats = trip.getLats();
+                    if(trip.getLatLngs() != null) {
+                        mLocationList.clear();
+                        mLocationList = trip.getLatLngs();
                         mTrip = trip;
                         Log.i(TAG, trip.toString());
                     }
                 }
-            }
-        });
-        mHomeViewModel.getAllTrips().observe(this, new Observer<List<Trip>>() {
-            @Override
-            public void onChanged(List<Trip> trips) {
-                Log.i(TAG, trips.toString());
-            }
-        });
-        mHomeViewModel.getPIDsByTripId(mTrip.getId()).observe(this, new Observer<List<BluetoothPID>>() {
-            @Override
-            public void onChanged(List<BluetoothPID> bluetoothPIDS) {
-                mMetrics = MetricsUtil.getTripMetrics(mTrip.getId(), bluetoothPIDS);
             }
         });
     }

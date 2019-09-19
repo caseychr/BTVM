@@ -1,26 +1,43 @@
 package com.bluetoothvehiclemonitor.btvm.data.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "metrics_table")
 public class Metrics {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
     private int mId;
-    private int mTripId;
     private String mDistance;
     private String mAirFlow;
     private String mEngineRPM;
     private String mCoolantTemp;
     private String mVehicleSpeed;
+    private List<BluetoothPID> mBluetoothPIDS;
 
-    public Metrics(int tripId, String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed) {
-        mTripId = tripId;
+    public Metrics() {
+        mBluetoothPIDS = new ArrayList<>();
+    }
+
+    @Ignore
+    public Metrics(String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed,
+            List<BluetoothPID> bluetoothPIDS) {
+        mDistance = distance;
+        mAirFlow = airFlow;
+        mEngineRPM = engineRPM;
+        mCoolantTemp = coolantTemp;
+        mVehicleSpeed = vehicleSpeed;
+        mBluetoothPIDS = bluetoothPIDS;
+    }
+
+    @Ignore
+    public Metrics(String distance, String airFlow, String engineRPM, String coolantTemp, String vehicleSpeed) {
         mDistance = distance;
         mAirFlow = airFlow;
         mEngineRPM = engineRPM;
@@ -34,14 +51,6 @@ public class Metrics {
 
     public void setId(int id) {
         mId = id;
-    }
-
-    public int getTripId() {
-        return mTripId;
-    }
-
-    public void setTripId(int tripId) {
-        mTripId = tripId;
     }
 
     public String getDistance() {
@@ -84,11 +93,24 @@ public class Metrics {
         mVehicleSpeed = vehicleSpeed;
     }
 
-    /*public List<Integer> getBluetoothPIDS_Integers() {
-        return mBluetoothPIDS_Integers;
+    public List<BluetoothPID> getBluetoothPIDS() {
+        return mBluetoothPIDS;
     }
 
-    public void setBluetoothPIDS_Integers(List<Integer> bluetoothPIDS_Integers) {
-        mBluetoothPIDS_Integers = bluetoothPIDS_Integers;
-    }*/
+    public void setBluetoothPIDS(List<BluetoothPID> bluetoothPIDS) {
+        mBluetoothPIDS = bluetoothPIDS;
+    }
+
+    @Override
+    public String toString() {
+        return "Metrics{" +
+                "mId=" + mId +
+                ", mDistance='" + mDistance + '\'' +
+                ", mAirFlow='" + mAirFlow + '\'' +
+                ", mEngineRPM='" + mEngineRPM + '\'' +
+                ", mCoolantTemp='" + mCoolantTemp + '\'' +
+                ", mVehicleSpeed='" + mVehicleSpeed + '\'' +
+                ", mBluetoothPIDS=" + mBluetoothPIDS +
+                '}';
+    }
 }

@@ -2,8 +2,6 @@ package com.bluetoothvehiclemonitor.btvm.data.local.room;
 
 import android.content.Context;
 
-import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
-import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
 import androidx.room.Database;
@@ -11,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {BluetoothPID.class, Metrics.class, Trip.class}, version = 1, exportSchema = false)
+@Database(entities = {Trip.class}, version = 1, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class BTVMDatabase extends RoomDatabase {
 
@@ -31,9 +29,6 @@ public abstract class BTVMDatabase extends RoomDatabase {
      * Set these abstract methods to corresponding Dao instances in their respective repositories
      * @return
      */
-    public abstract BluetoothPIDDao getBluetoothPIDDao();
-
-    public abstract MetricsDao getMetricsDao();
 
     public abstract TripDao getTripDao();
 

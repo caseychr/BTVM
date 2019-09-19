@@ -79,7 +79,7 @@ public class GPSService extends IntentService {
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         mIsPolling = true;
         mHandler.post(mCurrentLocationRunnable);
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
 
