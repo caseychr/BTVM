@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
+import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.MetricsViewModel;
 
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ public class MetricsFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_metrics, container, false);
         BaseActivity.setTitle(getActivity(), R.string.metrics_title);
-        initRecycler();
         subscribeObservers();
         return mView;
     }
@@ -56,11 +55,12 @@ public class MetricsFragment extends Fragment {
         mRecyclerView = mView.findViewById(R.id.metrics_recycler_view);
         mNoMetrics = mView.findViewById(R.id.metrics_none);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if(checkIfMetricsAreValid(mTripList)) {
+
+        if(mMetricsAdapter == null) {
             mMetricsAdapter = new MetricsAdapter(mTripList, getContext(), mMetricsViewModel.isMetric());
             mRecyclerView.setAdapter(mMetricsAdapter);
-            mMetricsAdapter.notifyDataSetChanged();
         }
+        mMetricsAdapter.notifyDataSetChanged();
         if(mTripList.isEmpty()) {
             mRecyclerView.setVisibility(View.INVISIBLE);
             mNoMetrics.setVisibility(View.VISIBLE);
@@ -74,27 +74,35 @@ public class MetricsFragment extends Fragment {
         mMetricsViewModel.getAllTrips().observe(this, new Observer<List<Trip>>() {
             @Override
             public void onChanged(List<Trip> trips) {
-                mTripList = trips;
-                if(checkIfMetricsAreValid(mTripList)) {
+                mTripList = TestingUtil.getListWithInvalidTripsMixedIn();//trips;
+                if(checkIfMetricsAreValid()) {
+                    initRecycler();
                     mMetricsAdapter.setTrips(mTripList);
                 }
             }
         });
     }
 
-    //TODO need to check if the current trip in process is valid. if not remove it from the recyclerview until it is
-    private boolean checkIfMetricsAreValid(List<Trip> trips) {
-        boolean valid = false;
-        if(SharedPrefs.getInstance(getContext()).getIsRunning()) {
-            if(!trips.isEmpty() && (trips.get(0).getMetrics().getDistance() != null && trips.get(0).getMetrics().getVehicleSpeed() != null &&
-                    trips.get(0).getMetrics().getEngineRPM() != null && trips.get(0).getMetrics().getCoolantTemp() != null &&
-                    trips.get(0).getMetrics().getAirFlow() != null)) {
-                valid = true;
+    private boolean checkIfMetricsAreValid() {
+        List<Trip> temps = new ArrayList<>();
+        if(mTripList.size() <= 0) {
+            return false;
+        } else {
+            for(Trip t:mTripList) {
+                if(t.getMetrics().getDistance() != null &&
+                        t.getMetrics().getVehicleSpeed() != null &&
+                        t.getMetrics().getEngineRPM() != null &&
+                        t.getMetrics().getCoolantTemp() != null &&
+                        t.getMetrics().getAirFlow() != null) {
+                    temps.add(t);
+                }
+            }
+            if(temps.size() > 0) {
+                mTripList = temps;
+                return true;
+            } else {
+                return false;
             }
         }
-        else {
-            valid = true;
-        }
-        return valid;
     }
 }

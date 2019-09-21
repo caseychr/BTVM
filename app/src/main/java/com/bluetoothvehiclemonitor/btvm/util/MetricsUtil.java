@@ -1,6 +1,8 @@
 package com.bluetoothvehiclemonitor.btvm.util;
 
 
+import android.util.Log;
+
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
@@ -11,6 +13,8 @@ public class MetricsUtil {
     private static final String TAG = "MetricsUtil";
 
     public static Metrics getOverallMetrics(List<Trip> trips) {
+        Log.i(TAG, trips.size()+"");
+        Log.i(TAG, trips.toString());
         if(trips == null || (trips.get(0).getMetrics().getAirFlow() == null || trips.get(0).getMetrics().getCoolantTemp()  == null ||
         trips.get(0).getMetrics().getDistance()  == null || trips.get(0).getMetrics().getEngineRPM()  == null ||
                 trips.get(0).getMetrics().getVehicleSpeed()  == null)) {
