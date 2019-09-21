@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CardStyle"
-            android:textSize="14dp"
+            android:textSize="12dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp" android:text="Total Distance"
             
@@ -47,7 +47,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
             android:text="1230"
-            android:textSize="14dp"
+            android:textSize="12dp"
             
             app:layout_constraintStart_toEndOf="@+id/tv_metric_distance"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_date"/>
@@ -59,7 +59,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
             android:text="KMPH"
-            android:textSize="14dp"
+            android:textSize="12dp"
             
             app:layout_constraintStart_toEndOf="@+id/tv_metric_distance_num"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_date"/>
@@ -73,7 +73,7 @@
             android:layout_marginTop="10dp"
             android:text="Avg Coolant Temp"
             
-            android:textSize="14dp"
+            android:textSize="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_distance"/>
         <TextView
@@ -83,7 +83,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
             android:text="1230"
-            android:textSize="14dp"
+            android:textSize="12dp"
             
             app:layout_constraintStart_toEndOf="@+id/tv_metric_coolant"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_distance_num"/>
@@ -94,7 +94,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
             android:text="KMPH"
-            android:textSize="14dp"
+            android:textSize="12dp"
             
             app:layout_constraintStart_toEndOf="@+id/tv_metric_coolant_num"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_distance_unit"/>
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content" android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 style="@style/CardStyle"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 android:text="Avg Airflow"
                 
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +128,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:text="1230"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_airflow"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -140,7 +140,7 @@
                 android:layout_marginTop="10dp"
                 android:text="KMPH"
                 
-                android:textSize="14dp"
+                android:textSize="12dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_metric_airflow_num"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -153,7 +153,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CardStyle"
-            android:textSize="14dp"
+            android:textSize="12dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="10dp"
             android:text="Avg Speed"
@@ -169,7 +169,7 @@
             android:layout_marginTop="10dp"
             android:text="1230"
             
-            android:textSize="14dp"
+            android:textSize="12dp"
             app:layout_constraintEnd_toStartOf="@+id/tv_metric_speed_unit"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_date"/>
         <TextView
@@ -180,7 +180,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="10dp"
             android:text="KMPH"
-            android:textSize="14dp"
+            android:textSize="12dp"
             
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_date"/>
@@ -191,7 +191,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_marginStart="8dp"
             style="@style/CardStyle"
-            android:textSize="14dp"
+            android:textSize="12dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             
@@ -206,7 +206,7 @@
             android:layout_marginTop="10dp"
             android:text="1230"
             
-            android:textSize="14dp"
+            android:textSize="12dp"
             app:layout_constraintEnd_toStartOf="@+id/tv_metric_rpm_unit"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_speed_num"/>
         <TextView
@@ -217,7 +217,7 @@
             android:layout_marginTop="10dp"
             android:text="RPM"
             
-            android:textSize="14dp"
+            android:textSize="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_metric_speed_unit"/>
 

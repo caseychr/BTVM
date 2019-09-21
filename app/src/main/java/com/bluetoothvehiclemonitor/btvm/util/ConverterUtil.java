@@ -1,11 +1,10 @@
 package com.bluetoothvehiclemonitor.btvm.util;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 
 public class ConverterUtil {
+
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     public static float convertKMtoMiles(float km) {
         float conversion = 0.621371F;
@@ -24,14 +23,23 @@ public class ConverterUtil {
         return ounces;
     }
 
-    public static byte[] getBytesFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-        return stream.toByteArray();
+    public static String convertKMtoMiles(String km) {
+        float fkm = Float.valueOf(km);
+        float conversion = 0.621371F;
+        float miles = fkm * conversion;
+        return String.valueOf(df.format(miles));
     }
 
-    public static Bitmap getBitmapFromBytes(byte[] bytes) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        return bitmap;
+    public static String convertCelsiusToFahrenheit(String degrees) {
+        float fdegrees = Float.valueOf(degrees);
+        float fahrenheit = (float) ((fdegrees * 1.8) + 32);
+        return String.valueOf(df.format(fahrenheit));
+    }
+
+    public static String convertGramsToOunces(String grams) {
+        float fgms = Float.valueOf(grams);
+        float conversion = 0.035274F;
+        float ounces = fgms * conversion;
+        return String.valueOf(df.format(ounces));
     }
 }

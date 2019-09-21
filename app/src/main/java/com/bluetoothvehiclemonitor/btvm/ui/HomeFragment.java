@@ -25,7 +25,7 @@ import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
-import com.driverapp.bluetoothandroidlibrary.MessageUpdate;
+import com.bluetoothvehiclemonitor.btvm.bluetooth.MessageUpdate;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;

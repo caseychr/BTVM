@@ -5,8 +5,9 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 
-import com.driverapp.bluetoothandroidlibrary.BluetoothController;
-import com.driverapp.bluetoothandroidlibrary.MessageUpdate;
+import com.bluetoothvehiclemonitor.btvm.bluetooth.BluetoothController;
+import com.bluetoothvehiclemonitor.btvm.bluetooth.MessageUpdate;
+
 
 import androidx.annotation.Nullable;
 

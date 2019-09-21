@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
+import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
 
@@ -25,6 +26,7 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static final int METRIC = 1;
 
     boolean isMetric;
+    boolean retrievedMetrics = false;
     List<Trip> mTripList;
     Context mContext;
 
@@ -55,36 +57,52 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         Trip trip = mTripList.get(position);
         if(getItemViewType(position) == OVERALL) {
-            ((OverallMetricsViewHolder) holder).mTvDistanceNum.setText(trip.getMetrics().getDistance());
-            ((OverallMetricsViewHolder) holder).mTvAirflowNum.setText(trip.getMetrics().getAirFlow());
-            ((OverallMetricsViewHolder) holder).mTvCoolantNum.setText(trip.getMetrics().getCoolantTemp());
-            ((OverallMetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
-            ((OverallMetricsViewHolder) holder).mTvSpeedNum.setText(trip.getMetrics().getVehicleSpeed());
-
             if(isMetric) {
+                ((OverallMetricsViewHolder) holder).mTvDistanceNum.setText(trip.getMetrics().getDistance());
+                ((OverallMetricsViewHolder) holder).mTvAirflowNum.setText(trip.getMetrics().getAirFlow());
+                ((OverallMetricsViewHolder) holder).mTvCoolantNum.setText(trip.getMetrics().getCoolantTemp());
+                ((OverallMetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
+                ((OverallMetricsViewHolder) holder).mTvSpeedNum.setText(trip.getMetrics().getVehicleSpeed());
                 ((OverallMetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.metric_distance);
                 ((OverallMetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.metric_speed);
                 ((OverallMetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.metric_coolant);
                 ((OverallMetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.metric_airflow);
             } else {
+                ((OverallMetricsViewHolder) holder).mTvDistanceNum.setText(ConverterUtil
+                        .convertKMtoMiles(trip.getMetrics().getDistance()));
+                ((OverallMetricsViewHolder) holder).mTvAirflowNum.setText(ConverterUtil
+                        .convertGramsToOunces(trip.getMetrics().getAirFlow()));
+                ((OverallMetricsViewHolder) holder).mTvCoolantNum.setText(ConverterUtil
+                        .convertCelsiusToFahrenheit(trip.getMetrics().getCoolantTemp()));
+                ((OverallMetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
+                ((OverallMetricsViewHolder) holder).mTvSpeedNum.setText(ConverterUtil
+                        .convertKMtoMiles(trip.getMetrics().getVehicleSpeed()));
                 ((OverallMetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.imperial_distance);
                 ((OverallMetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.imperial_speed);
                 ((OverallMetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.imperial_coolant);
                 ((OverallMetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.imperial_airflow);
             }
         } else {
-            ((MetricsViewHolder) holder).mTvDistanceNum.setText(trip.getMetrics().getDistance());
-            ((MetricsViewHolder) holder).mTvAirflowNum.setText(trip.getMetrics().getAirFlow());
-            ((MetricsViewHolder) holder).mTvCoolantNum.setText(trip.getMetrics().getCoolantTemp());
-            ((MetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
-            ((MetricsViewHolder) holder).mTvSpeedNum.setText(trip.getMetrics().getVehicleSpeed());
-
             if(isMetric) {
+                ((MetricsViewHolder) holder).mTvDistanceNum.setText(trip.getMetrics().getDistance());
+                ((MetricsViewHolder) holder).mTvAirflowNum.setText(trip.getMetrics().getAirFlow());
+                ((MetricsViewHolder) holder).mTvCoolantNum.setText(trip.getMetrics().getCoolantTemp());
+                ((MetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
+                ((MetricsViewHolder) holder).mTvSpeedNum.setText(trip.getMetrics().getVehicleSpeed());
                 ((MetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.metric_distance);
                 ((MetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.metric_speed);
                 ((MetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.metric_coolant);
                 ((MetricsViewHolder) holder).mTvAirflowUnit.setText(R.string.metric_airflow);
             } else {
+                ((MetricsViewHolder) holder).mTvDistanceNum.setText(ConverterUtil
+                        .convertKMtoMiles(trip.getMetrics().getDistance()));
+                ((MetricsViewHolder) holder).mTvAirflowNum.setText(ConverterUtil
+                        .convertGramsToOunces(trip.getMetrics().getAirFlow()));
+                ((MetricsViewHolder) holder).mTvCoolantNum.setText(ConverterUtil
+                        .convertCelsiusToFahrenheit(trip.getMetrics().getCoolantTemp()));
+                ((MetricsViewHolder) holder).mTvRPMNum.setText(trip.getMetrics().getEngineRPM());
+                ((MetricsViewHolder) holder).mTvSpeedNum.setText(ConverterUtil
+                        .convertKMtoMiles(trip.getMetrics().getVehicleSpeed()));
                 ((MetricsViewHolder) holder).mTvDistanceUnit.setText(R.string.imperial_distance);
                 ((MetricsViewHolder) holder).mTvSpeedUnit.setText(R.string.imperial_speed);
                 ((MetricsViewHolder) holder).mTvCoolantUnit.setText(R.string.imperial_coolant);
@@ -126,10 +144,13 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setOverallMetric() {
-        Metrics metrics = MetricsUtil.getOverallMetrics(mTripList);
-        Trip trip = new Trip(DateUtil.getStringFromCurrentDate());
-        trip.setMetrics(metrics);
-        mTripList.add(0, trip);
+        if(!retrievedMetrics) {
+            Metrics metrics = MetricsUtil.getOverallMetrics(mTripList);
+            Trip trip = new Trip(DateUtil.getStringFromCurrentDate());
+            trip.setMetrics(metrics);
+            mTripList.add(0, trip);
+            retrievedMetrics = true;
+        }
     }
 
     private class OverallMetricsViewHolder extends RecyclerView.ViewHolder {
