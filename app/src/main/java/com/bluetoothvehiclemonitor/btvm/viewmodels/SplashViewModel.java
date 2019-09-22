@@ -17,12 +17,17 @@ import com.bluetoothvehiclemonitor.btvm.util.PermissionsUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 public class SplashViewModel extends AndroidViewModel {
     private static final String TAG = "SplashViewModel";
     public static final int BLUETOOTH_ON_REQUEST_CODE = 2;
+
+    @Inject
+    public SharedPrefs mSharedPrefs;
 
     public Application mApplication;
     public boolean haveLocationPermissions;
@@ -37,8 +42,10 @@ public class SplashViewModel extends AndroidViewModel {
     String[] mBluetoothDeviceArray;
     public List<BluetoothDevice> mDevices = new ArrayList<>();
 
-    public SplashViewModel(Application application) {
+    @Inject
+    public SplashViewModel(Application application, SharedPrefs sharedPrefs) {
         super(application);
+        mSharedPrefs = sharedPrefs;
         haveBTPermissions = false;
         haveLocationPermissions = false;
         isBTCapable = false;
@@ -52,13 +59,16 @@ public class SplashViewModel extends AndroidViewModel {
             mDevices.addAll(mAdapter.getBondedDevices());
         }
         if(checkStoredDevice()) {
-            mBluetoothDeviceArray = SharedPrefs.getInstance(mApplication.getApplicationContext()).getDevice();
+            mBluetoothDeviceArray = mSharedPrefs.getDevice();
         }
     }
 
+    public String getSharedPrefsString() {
+        return mSharedPrefs.getString();
+    }
+
     private boolean checkStoredDevice() {
-        return SharedPrefs.getInstance(mApplication.getApplicationContext()) // is there a device connected?
-                .mSharedPrefs.contains(PREF_BT_DEVICE_NAME);
+        return mSharedPrefs.mSharedPrefs.contains(PREF_BT_DEVICE_NAME);
     }
 
     private void setBluetoothDevice() {
@@ -89,7 +99,9 @@ public class SplashViewModel extends AndroidViewModel {
                         }
                     } else if(mAdapter.getBondedDevices().size() == 1) {
                         BaseActivity.sBluetoothDevice = mDevices.get(0);
-                        SharedPrefs.getInstance(activity).setDevice(BaseActivity.sBluetoothDevice.getName(),
+                        /*SharedPrefs.getInstance(activity).setDevice(BaseActivity.sBluetoothDevice.getName(),
+                                BaseActivity.sBluetoothDevice.getAddress());*/
+                        mSharedPrefs.setDevice(BaseActivity.sBluetoothDevice.getName(),
                                 BaseActivity.sBluetoothDevice.getAddress());
                         if(PermissionsUtil.mLocationPermissionGranted) {
                             return true;

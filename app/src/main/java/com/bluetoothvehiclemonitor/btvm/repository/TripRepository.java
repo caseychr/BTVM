@@ -5,27 +5,61 @@ import android.os.AsyncTask;
 
 import com.bluetoothvehiclemonitor.btvm.data.local.room.BTVMDatabase;
 import com.bluetoothvehiclemonitor.btvm.data.local.room.TripDao;
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.lifecycle.LiveData;
 
 public class TripRepository {
 
-    private static TripRepository instance;
+    public SharedPrefs mSharedPrefs;
 
     private TripDao mTripDao;
 
-    private TripRepository(Context context) {
+    @Inject
+    public TripRepository(SharedPrefs sharedPrefs, Context context) {
+        mSharedPrefs = sharedPrefs;
         mTripDao = BTVMDatabase.getInstance(context).getTripDao();
     }
 
-    public static TripRepository getInstance(Context context) {
-        if(instance == null) {
-            instance = new TripRepository(context);
-        }
-        return instance;
+    public String getSharedPrefsString() {
+        return mSharedPrefs.getString();
+    }
+
+    public String[] getDevice() {
+        return mSharedPrefs.getDevice();
+    }
+
+    public void setDevice(String device, String address) {
+        mSharedPrefs.setDevice(device, address);
+    }
+
+    public Double[] getLastLatLon() {
+        return mSharedPrefs.getLastLatLon();
+    }
+
+    public void setLastLatLon(double lat, double lon) {
+        mSharedPrefs.setLastLatLon(lat, lon);
+    }
+
+    public boolean getIsMetric() {
+        return mSharedPrefs.getIsMetric();
+    }
+
+    public void setIsMetric(boolean metric) {
+        mSharedPrefs.setIsMetric(metric);
+    }
+
+    public boolean getIsRunning() {
+        return mSharedPrefs.getIsRunning();
+    }
+
+    public void setIsRunning(boolean running) {
+        mSharedPrefs.setIsRunning(running);
     }
 
     public void insertTrip(Trip trip) {
@@ -43,8 +77,6 @@ public class TripRepository {
     public LiveData<List<Trip>> getAllTrips() {
         return mTripDao.getAllTrips();
     }
-
-
 
     public static class InsertTripAsyncTask extends AsyncTask<Trip, Void, Void> {
         private TripDao tripDao;

@@ -4,12 +4,20 @@ import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.location.Location;
 
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
+import javax.inject.Inject;
 
-public abstract class BaseActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+import dagger.android.support.DaggerAppCompatActivity;
+
+public abstract class BaseActivity extends DaggerAppCompatActivity {
+
+    //@Inject
+    //public SharedPrefs mSharedPrefs;
 
     public static BluetoothDevice sBluetoothDevice;
     public static Location sCurrentLocation;

@@ -1,6 +1,7 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,19 +11,24 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+//import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SettingsViewModel;
+import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import dagger.android.support.DaggerFragment;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends DaggerFragment {
     private static final String TAG = "SettingsFragment";
+
+    @Inject ViewModelProviderFactory mProviderFactory;
 
     View mView;
     DeviceAdapter mDeviceAdapter;
@@ -35,7 +41,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        mSettingsViewModel = ViewModelProviders.of(this, mProviderFactory).get(SettingsViewModel.class);
+        Log.i(TAG, mSettingsViewModel.getSharedPrefsString());
     }
 
     @Nullable
@@ -71,13 +78,13 @@ public class SettingsFragment extends Fragment {
     private void initRecyclerView() {
         mRecyclerView = mView.findViewById(R.id.recycler_view_devices);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices(), getContext());
+        mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices(), mSettingsViewModel.mTripRepository.mSharedPrefs, getContext());
         mRecyclerView.setAdapter(mDeviceAdapter);
         mDeviceAdapter.notifyDataSetChanged();
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                if(SharedPrefs.getInstance(getContext()).getIsRunning()) {
+                if(mSettingsViewModel.getIsRunning()) {//SharedPrefs.getInstance(getContext()).getIsRunning()) {
                     BaseActivity.sBluetoothDevice = mSettingsViewModel.getDevices().get(position);
                     mSettingsViewModel.setDevice(BaseActivity.sBluetoothDevice.getName(), BaseActivity.sBluetoothDevice.getAddress());
                     Toast.makeText(getActivity(), "Connecting to "+BaseActivity.sBluetoothDevice.getName(), Toast.LENGTH_LONG).show();

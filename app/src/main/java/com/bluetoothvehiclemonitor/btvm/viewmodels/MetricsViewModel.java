@@ -8,6 +8,8 @@ import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -17,10 +19,15 @@ public class MetricsViewModel extends AndroidViewModel {
     TripRepository mTripRepository;
     Application mApplication;
 
-    public MetricsViewModel(@NonNull Application application) {
+    @Inject
+    public MetricsViewModel(@NonNull Application application, TripRepository tripRepository) {
         super(application);
         mApplication = application;
-        mTripRepository = TripRepository.getInstance(application);
+        mTripRepository = tripRepository;
+    }
+
+    public String getSharedPrefsString() {
+        return mTripRepository.getSharedPrefsString();
     }
 
     public LiveData<List<Trip>> getAllTrips() {
@@ -28,6 +35,6 @@ public class MetricsViewModel extends AndroidViewModel {
     }
 
     public boolean isMetric() {
-        return SharedPrefs.getInstance(mApplication.getApplicationContext()).getIsMetric();
+        return mTripRepository.getIsMetric();
     }
 }

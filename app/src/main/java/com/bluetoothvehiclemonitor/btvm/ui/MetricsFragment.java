@@ -1,6 +1,7 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,12 @@ import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.MetricsViewModel;
+import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,9 +25,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import dagger.android.support.DaggerFragment;
 
-public class MetricsFragment extends Fragment {
+public class MetricsFragment extends DaggerFragment {
     private static final String TAG = "MetricsFragment";
+
+    @Inject ViewModelProviderFactory mProviderFactory;
 
     View mView;
     RecyclerView mRecyclerView;
@@ -38,7 +45,8 @@ public class MetricsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mMetricsViewModel = ViewModelProviders.of(this).get(MetricsViewModel.class);
+        mMetricsViewModel = ViewModelProviders.of(this, mProviderFactory).get(MetricsViewModel.class);
+        Log.i(TAG, mMetricsViewModel.getSharedPrefsString());
     }
 
     @Nullable
