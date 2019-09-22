@@ -12,14 +12,19 @@ import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder> {
     private static final String TAG = "DeviceAdapter";
+
+    public SharedPrefs mSharedPrefs;
 
     public interface OnItemClickListener{
         void onClick(int position);
@@ -30,7 +35,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     OnItemClickListener mOnItemClickListener;
     int lastCheckedPosition = -1;
 
-    public DeviceAdapter(List<BluetoothDevice> devices, Context context) {
+    @Inject
+    public DeviceAdapter(List<BluetoothDevice> devices, SharedPrefs sharedPrefs, Context context) {
+        mSharedPrefs = sharedPrefs;
         mContext = context;
         mDevices = devices;
         Log.i(TAG, mDevices.toString());
@@ -38,8 +45,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     }
 
     private void getStoredDevice() {
-        if(SharedPrefs.getInstance(mContext).mSharedPrefs.contains(SharedPrefs.PREF_BT_DEVICE_NAME)) {
-            String[] device = SharedPrefs.getInstance(mContext).getDevice();
+        if(mSharedPrefs.mSharedPrefs.contains(SharedPrefs.PREF_BT_DEVICE_NAME)) {
+            String[] device = mSharedPrefs.getDevice();
             for(int i=0;i<mDevices.size();i++) {
                 if(mDevices.get(i).getName().equals(device[0]) && mDevices.get(i).getAddress().equals(device[1])) {
                     lastCheckedPosition = i;
@@ -101,7 +108,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
         @Override
         public void onClick(View view) {
-            if(SharedPrefs.getInstance(mContext).getIsRunning()) {
+            if(mSharedPrefs.getIsRunning()) {
                 Toast.makeText(mContext, "Bluetooth is already running. Cannot change devices", Toast.LENGTH_LONG).show();
             }else {
                 lastCheckedPosition = getAdapterPosition();

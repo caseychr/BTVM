@@ -26,6 +26,7 @@ dependencies {
     def nav_version = "2.1.0-alpha02"
     def PARCELER_VERSION = '1.0.3'
     def retrofitVersion = "2.5.0"
+    def dagger_version = "2.24"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -33,6 +34,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //Dagger 2
+    implementation "com.google.dagger:dagger:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+    //Dagger 2 Support Library
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // Location Services
     implementation "com.google.android.gms:play-services-location:15.0.1"

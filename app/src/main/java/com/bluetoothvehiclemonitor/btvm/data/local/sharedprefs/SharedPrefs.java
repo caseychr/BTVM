@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class SharedPrefs {
     private static final String TAG = "SharedPrefs";
 
@@ -20,15 +24,12 @@ public class SharedPrefs {
     public SharedPreferences mSharedPrefs;
     public SharedPreferences.Editor mEditor;
 
-    public static SharedPrefs getInstance(Context context) {
-        if(instance == null) {
-            instance = new SharedPrefs(context);
-        }
-        return instance;
+    public SharedPrefs(Context context) {
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    private SharedPrefs(Context context) {
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+    public String getString() {
+        return "String in Shared Prefs";
     }
 
     public String[] getDevice() {

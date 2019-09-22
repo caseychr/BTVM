@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+//import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.services.BluetoothService;
@@ -26,6 +26,7 @@ import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
 import com.bluetoothvehiclemonitor.btvm.bluetooth.MessageUpdate;
+import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,14 +35,18 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import dagger.android.support.DaggerFragment;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, MessageUpdate {
+public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, MessageUpdate {
     private static final String TAG = "HomeFragment";
+
+    @Inject ViewModelProviderFactory mProviderFactory;
 
     View mView;
     ImageView mStartBtn;
@@ -78,9 +83,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         initBroadcastIntent();
         mLocationReceiver = new LocationReceiver();
         getActivity().registerReceiver(mLocationReceiver, mIntentFilter);
-        mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        mHomeViewModel = ViewModelProviders.of(this, mProviderFactory).get(HomeViewModel.class);
         mGPSService = GPSService.newIntent(getActivity());
-        mIsRunning = SharedPrefs.getInstance(getContext()).getIsRunning();
+        mIsRunning = mHomeViewModel.getIsRunning();//SharedPrefs.getInstance(getContext()).getIsRunning();
+        Log.i(TAG, mHomeViewModel.getSharedPrefsString());
     }
 
     @Nullable
@@ -156,11 +162,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
             @Override
             public void onClick(View view) {
                 if(!mIsRunning) {
-                    SharedPrefs.getInstance(getContext()).setIsRunning(true);
+                    //SharedPrefs.getInstance(getContext()).setIsRunning(true);
+                    mHomeViewModel.setIsRunning(true);
                     mIsRunning = true;
                     startPressed();
                 } else {
-                    SharedPrefs.getInstance(getContext()).setIsRunning(false);
+                    //SharedPrefs.getInstance(getContext()).setIsRunning(false);
+                    mHomeViewModel.setIsRunning(false);
                     mIsRunning = false;
                     stopPressed();
                 }
@@ -296,7 +304,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
         mHomeViewModel.getLatestTrip().observe(this, new Observer<Trip>() {
             @Override
             public void onChanged(Trip trip) {
-                if(SharedPrefs.getInstance(getContext()).getIsRunning()) {
+                if(mHomeViewModel.getIsRunning()) {//SharedPrefs.getInstance(getContext()).getIsRunning()) {
                     if(trip.getLatLngs() != null) {
                         mLocationList.clear();
                         mLocationList = trip.getLatLngs();
@@ -317,7 +325,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Messag
                 if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NEW_LOCATION_BROADCAST)) {
                     Location location = intent.getParcelableExtra(GPSService.CURRENT_LOCATION_KEY);
                     BaseActivity.sCurrentLocation = location;
-                    SharedPrefs.getInstance(getContext()).setLastLatLon(location.getLatitude(), location.getLongitude());
+                    //SharedPrefs.getInstance(getContext()).setLastLatLon(location.getLatitude(), location.getLongitude());
+                    mHomeViewModel.setLastLatLon(location.getLatitude(), location.getLongitude());
                     updatePolylineList(location);
                 } else if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NO_LOCATION_BROADCAST)) {
                     Toast.makeText(context, "We are not receiving new location", Toast.LENGTH_SHORT).show();

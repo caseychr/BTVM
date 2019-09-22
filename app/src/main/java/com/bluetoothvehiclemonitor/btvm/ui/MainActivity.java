@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.services.GPSService;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.MainViewModel;
+import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
 import com.google.android.material.navigation.NavigationView;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
@@ -22,6 +26,8 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
+
+    @Inject ViewModelProviderFactory mProviderFactory;
 
     private NavigationView mNavigationView;
     private AppBarConfiguration mAppBarConfiguration;
@@ -45,7 +51,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mIntentFilter.addAction(GPSService.BROADCAST_ACTION);
         mIntentFilter.addCategory(GPSService.BROADCAST_CATEGORY);
 
-        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mMainViewModel = ViewModelProviders.of(this, mProviderFactory).get(MainViewModel.class);
+        Log.i(TAG, mMainViewModel.getSharedPrefsString());
     }
 
     @Override

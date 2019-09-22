@@ -2,8 +2,10 @@ package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +17,17 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.util.PermissionsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SplashViewModel;
+import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +40,10 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    @Inject ViewModelProviderFactory mProviderFactory;
+    @Inject RequestManager mRequestManager;
+    @Inject Drawable logo;
+
     ViewGroup mViewGroup;
     RecyclerView mRecyclerView;
     DeviceAdapter mDeviceAdapter;
@@ -42,7 +51,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     PopupWindow mDeviceWindow;
     SplashViewModel mSplashViewModel;
     BottomSheetDialog mDialog;
-    ImageView mSpashView;
     ProgressBar mProgressBar;
     View mParent;
 
@@ -50,20 +58,24 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        setLogo();
         mParent = findViewById(R.id.splash);
         mViewGroup = findViewById(android.R.id.content);
-        mSpashView = findViewById(R.id.img_splash);
         mProgressBar = findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.VISIBLE);
         mDialog = new BottomSheetDialog();
-
-        mSplashViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
+        mSplashViewModel = ViewModelProviders.of(this, mProviderFactory).get(SplashViewModel.class);
+        Log.i(TAG, mSplashViewModel.getSharedPrefsString());
         checkPerms();
+    }
+
+    private void setLogo() {
+        mRequestManager.load(logo).into((ImageView)findViewById(R.id.img_splash));
     }
 
     private void onPermissionSuccess(){
         getDeviceLocation();
-        SharedPrefs.getInstance(this).setIsRunning(false);
+        mSplashViewModel.mSharedPrefs.setIsRunning(false);
         mProgressBar.setVisibility(View.GONE);
         Intent intent = MainActivity.newIntent(this);
         startActivity(intent);
@@ -78,7 +90,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mRecyclerView = mDeviceView.findViewById(R.id.device_list_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if(mDeviceAdapter == null){
-            mDeviceAdapter = new DeviceAdapter(mSplashViewModel.getDevices(), getApplicationContext());
+            mDeviceAdapter = new DeviceAdapter(mSplashViewModel.getDevices(), mSplashViewModel.mSharedPrefs, getApplicationContext());
             mRecyclerView.setAdapter(mDeviceAdapter);
         }
         mDeviceAdapter.notifyDataSetChanged();
@@ -86,7 +98,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
             @Override
             public void onClick(int position) {
                 BluetoothDevice device = mSplashViewModel.mDevices.get(position);
-                SharedPrefs.getInstance(getApplicationContext()).setDevice(device.getName(), device.getAddress());
+                mSplashViewModel.mSharedPrefs.setDevice(device.getName(), device.getAddress());
                 BaseActivity.sBluetoothDevice = device;
                 checkPerms();
                 mDeviceWindow.dismiss();
@@ -156,14 +168,14 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 public void onComplete(@NonNull Task task) {
                     if(task.isSuccessful()) { // We send currentLocation to broadcastLocation and then check for NULL
                         sCurrentLocation = (Location) task.getResult();
-                        SharedPrefs.getInstance(SplashActivity.this)
-                                .setLastLatLon(sCurrentLocation.getLatitude(), sCurrentLocation.getLongitude());
+                        mSplashViewModel.mSharedPrefs.setLastLatLon(sCurrentLocation.getLatitude(), sCurrentLocation.getLongitude());
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Double[] prefsLatLon = SharedPrefs.getInstance(SplashActivity.this).getLastLatLon();
+                    Double[] prefsLatLon = mSplashViewModel.mSharedPrefs.getLastLatLon();
+
                     sCurrentLocation = null;
                     sCurrentLocation.setLatitude(prefsLatLon[0]);
                     sCurrentLocation.setLongitude(prefsLatLon[1]);
