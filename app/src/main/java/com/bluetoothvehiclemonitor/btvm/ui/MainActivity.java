@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,
+        BottomSheetDialog.BottomSheetListener {
     private static final String TAG = "MainActivity";
 
     @Inject ViewModelProviderFactory mProviderFactory;
@@ -139,5 +141,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), mAppBarConfiguration);
+    }
+
+    @Override
+    public String updateDialogText() {
+        return "Unable to Connect with device.\nCheck that the device is within range.";
+    }
+
+    @Override
+    public String updateButtonText() {
+        return getString(R.string.perms_btn_bt_choose_device);
+    }
+
+    @Override
+    public void onButtonClicked() {
+        Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+        startActivity(intent);
     }
 }

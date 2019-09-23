@@ -58,7 +58,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         return view;
     }
 
-    /*@Override
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
@@ -66,5 +66,5 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString()+" must implement BottomSheetListener");
         }
-    }*/
+    }
 }

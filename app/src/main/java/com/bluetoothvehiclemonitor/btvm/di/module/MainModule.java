@@ -5,6 +5,7 @@ import android.app.Application;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.di.scope.MainScope;
 import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
+import com.bluetoothvehiclemonitor.btvm.ui.MetricsAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,4 +24,10 @@ public class MainModule {
     static TripRepository provideTripRepository(SharedPrefs sharedPrefs, Application application) {
         return new TripRepository(sharedPrefs, application.getApplicationContext());
     };
+
+    @MainScope
+    @Provides
+    static MetricsAdapter provideMetricsAdapter() {
+        return new MetricsAdapter();
+    }
 }

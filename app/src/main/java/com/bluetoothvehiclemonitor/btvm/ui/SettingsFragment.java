@@ -11,7 +11,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-//import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SettingsViewModel;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
 
@@ -29,9 +28,9 @@ public class SettingsFragment extends DaggerFragment {
     private static final String TAG = "SettingsFragment";
 
     @Inject ViewModelProviderFactory mProviderFactory;
+    @Inject DeviceAdapter mDeviceAdapter;
 
     View mView;
-    DeviceAdapter mDeviceAdapter;
     Switch mIsMetric;
     RecyclerView mRecyclerView;
     Button mUpdateBtn;
@@ -78,8 +77,8 @@ public class SettingsFragment extends DaggerFragment {
     private void initRecyclerView() {
         mRecyclerView = mView.findViewById(R.id.recycler_view_devices);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mDeviceAdapter = new DeviceAdapter(mSettingsViewModel.getDevices(), mSettingsViewModel.mTripRepository.mSharedPrefs, getContext());
         mRecyclerView.setAdapter(mDeviceAdapter);
+        mDeviceAdapter.setDeviceList(mSettingsViewModel.getDevices());
         mDeviceAdapter.notifyDataSetChanged();
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override

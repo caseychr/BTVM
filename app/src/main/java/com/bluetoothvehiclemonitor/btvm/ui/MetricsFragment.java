@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,10 +30,10 @@ public class MetricsFragment extends DaggerFragment {
     private static final String TAG = "MetricsFragment";
 
     @Inject ViewModelProviderFactory mProviderFactory;
+    @Inject MetricsAdapter mMetricsAdapter;
 
     View mView;
     RecyclerView mRecyclerView;
-    MetricsAdapter mMetricsAdapter;
 
     List<Trip> mTripList = new ArrayList<>();
     TextView mNoMetrics;
@@ -64,11 +63,8 @@ public class MetricsFragment extends DaggerFragment {
         mNoMetrics = mView.findViewById(R.id.metrics_none);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if(mMetricsAdapter == null) {
-            mMetricsAdapter = new MetricsAdapter(mTripList, getContext(), mMetricsViewModel.isMetric());
-            mRecyclerView.setAdapter(mMetricsAdapter);
-        }
-        mMetricsAdapter.notifyDataSetChanged();
+        mMetricsAdapter.setTrips(mTripList, mMetricsViewModel.isMetric());
+        mRecyclerView.setAdapter(mMetricsAdapter);
         if(mTripList.isEmpty()) {
             mRecyclerView.setVisibility(View.INVISIBLE);
             mNoMetrics.setVisibility(View.VISIBLE);
@@ -86,7 +82,7 @@ public class MetricsFragment extends DaggerFragment {
                 mTripList = trips;//TestingUtil.getListWithInvalidTripsMixedIn();
                 if(checkIfMetricsAreValid()) {
                     initRecycler();
-                    mMetricsAdapter.setTrips(mTripList);
+                    mMetricsAdapter.setTrips(mTripList, mMetricsViewModel.isMetric());
                 }
             }
         });

@@ -45,7 +45,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.support.DaggerFragment;
 
-public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, MessageUpdate, BottomSheetDialog.BottomSheetListener {
+public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, MessageUpdate {
     private static final String TAG = "HomeFragment";
 
     @Inject ViewModelProviderFactory mProviderFactory;
@@ -167,12 +167,10 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
             @Override
             public void onClick(View view) {
                 if(!mIsRunning) {
-                    //SharedPrefs.getInstance(getContext()).setIsRunning(true);
                     mHomeViewModel.setIsRunning(true);
                     mIsRunning = true;
                     startPressed();
                 } else {
-                    //SharedPrefs.getInstance(getContext()).setIsRunning(false);
                     mHomeViewModel.setIsRunning(false);
                     mIsRunning = false;
                     stopPressed();
@@ -300,8 +298,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
 
     @Override
     public void updateErrorMessage(String s) {
-        Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
-        errorMessage = s;
         stopPressed();
         mHomeViewModel.setIsRunning(false);
         mDialog.show(getActivity().getSupportFragmentManager(), "bt");
@@ -322,22 +318,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
                 Log.i(TAG+" SO", trip.toString());
             }
         });
-    }
-
-    @Override
-    public String updateDialogText() {
-        return errorMessage;
-    }
-
-    @Override
-    public String updateButtonText() {
-        return getActivity().getString(R.string.perms_btn_bt_choose_device);
-    }
-
-    @Override
-    public void onButtonClicked() {
-        Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
-        getActivity().startActivity(intent);
     }
 
     public class LocationReceiver extends BroadcastReceiver {

@@ -43,11 +43,11 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     @Inject ViewModelProviderFactory mProviderFactory;
     @Inject RequestManager mRequestManager;
     @Inject Drawable logo;
+    @Inject DeviceAdapter mDeviceAdapter;
     @Inject BottomSheetDialog mDialog;
 
     ViewGroup mViewGroup;
     RecyclerView mRecyclerView;
-    DeviceAdapter mDeviceAdapter;
     View mDeviceView;
     PopupWindow mDeviceWindow;
     SplashViewModel mSplashViewModel;
@@ -66,6 +66,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         //mDialog = new BottomSheetDialog();
         mSplashViewModel = ViewModelProviders.of(this, mProviderFactory).get(SplashViewModel.class);
         Log.i(TAG, mSplashViewModel.getSharedPrefsString());
+        Log.i(TAG, mDeviceAdapter.getString());
         checkPerms();
     }
 
@@ -89,10 +90,8 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 WindowManager.LayoutParams.WRAP_CONTENT);
         mRecyclerView = mDeviceView.findViewById(R.id.device_list_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        if(mDeviceAdapter == null){
-            mDeviceAdapter = new DeviceAdapter(mSplashViewModel.getDevices(), mSplashViewModel.mSharedPrefs, getApplicationContext());
-            mRecyclerView.setAdapter(mDeviceAdapter);
-        }
+        mRecyclerView.setAdapter(mDeviceAdapter);
+        mDeviceAdapter.setDeviceList(mSplashViewModel.getDevices());
         mDeviceAdapter.notifyDataSetChanged();
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override
