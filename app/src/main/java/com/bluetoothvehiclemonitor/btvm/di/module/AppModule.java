@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+import com.bluetoothvehiclemonitor.btvm.ui.BottomSheetDialog;
 
 import javax.inject.Singleton;
 
@@ -23,6 +24,12 @@ public class AppModule {
     @Provides
     static SharedPrefs getSharedPrefs(Application application) {
         return new SharedPrefs(getContext(application));
+    }
+
+    @Singleton
+    @Provides
+    static BottomSheetDialog getBottomSheetDialog() {
+        return new BottomSheetDialog();
     }
 
     @Singleton

@@ -1,11 +1,13 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
-//import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.services.BluetoothService;
@@ -24,6 +25,7 @@ import com.bluetoothvehiclemonitor.btvm.services.GPSService;
 import com.bluetoothvehiclemonitor.btvm.util.ConverterUtil;
 import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
+import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
 import com.bluetoothvehiclemonitor.btvm.bluetooth.MessageUpdate;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
@@ -43,10 +45,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.support.DaggerFragment;
 
-public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, MessageUpdate {
+public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, MessageUpdate, BottomSheetDialog.BottomSheetListener {
     private static final String TAG = "HomeFragment";
 
     @Inject ViewModelProviderFactory mProviderFactory;
+    @Inject BottomSheetDialog mDialog;
 
     View mView;
     ImageView mStartBtn;
@@ -69,6 +72,7 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
     private boolean mIsRunning = false;
     Intent mBluetoothService;
     Intent mGPSService;
+    String errorMessage;
 
     List<LatLng> mLocationList = new ArrayList<>();
     Trip mTrip;
@@ -82,6 +86,7 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         setHasOptionsMenu(true);
         initBroadcastIntent();
         mLocationReceiver = new LocationReceiver();
+        //mDialog = new BottomSheetDialog();
         getActivity().registerReceiver(mLocationReceiver, mIntentFilter);
         mHomeViewModel = ViewModelProviders.of(this, mProviderFactory).get(HomeViewModel.class);
         mGPSService = GPSService.newIntent(getActivity());
@@ -183,12 +188,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         mTrip = new Trip(DateUtil.getStringFromCurrentDate());
         mHomeViewModel.insertTrip(mTrip);
 
-        /*
-        ////////// TESTING TRIPS ////////////////
-        List<Trip> trips = TestingUtil.getMockTrips();
-        for(Trip t:trips) {
-            mHomeViewModel.insertTrip(t);
-        }*/
         mTrip.setTimeStamp(DateUtil.getStringFromCurrentDate());
         updatePolylineList(BaseActivity.sCurrentLocation);
         mBluetoothService = BluetoothService.newIntent(getContext(),
@@ -203,6 +202,9 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         mStartTv.setText(getString(R.string.btn_start));
         MapsUtil.animateMapWithBounds(HomeFragment.this, mGoogleMap, mLocationList);
         GPSService.stopLocationPolling();
+        mBTRunning.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        mTrip.setMetrics(MetricsUtil.getTripMetrics(mTrip.getMetrics().getBluetoothPIDS()));
         getActivity().stopService(mGPSService);
         getActivity().stopService(mBluetoothService);
     }
@@ -242,6 +244,7 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
                         Float.valueOf(mAirFlowNumTv.getText().toString()), Float.valueOf(mRPMNumTv.getText().toString())));
                 mHomeViewModel.updateTrip(mTrip);
             }
+            Log.i(TAG, "current trip "+mTrip);
         }
     }
 
@@ -298,22 +301,43 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
     @Override
     public void updateErrorMessage(String s) {
         Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+        errorMessage = s;
+        stopPressed();
+        mHomeViewModel.setIsRunning(false);
+        mDialog.show(getActivity().getSupportFragmentManager(), "bt");
+
     }
 
     private void subscribeObservers() {
         mHomeViewModel.getLatestTrip().observe(this, new Observer<Trip>() {
             @Override
             public void onChanged(Trip trip) {
-                if(mHomeViewModel.getIsRunning()) {//SharedPrefs.getInstance(getContext()).getIsRunning()) {
+                if(mHomeViewModel.getIsRunning()) {
                     if(trip.getLatLngs() != null) {
                         mLocationList.clear();
                         mLocationList = trip.getLatLngs();
-                        mTrip = trip;
-                        Log.i(TAG, trip.toString());
                     }
                 }
+                mTrip = trip;
+                Log.i(TAG+" SO", trip.toString());
             }
         });
+    }
+
+    @Override
+    public String updateDialogText() {
+        return errorMessage;
+    }
+
+    @Override
+    public String updateButtonText() {
+        return getActivity().getString(R.string.perms_btn_bt_choose_device);
+    }
+
+    @Override
+    public void onButtonClicked() {
+        Intent intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+        getActivity().startActivity(intent);
     }
 
     public class LocationReceiver extends BroadcastReceiver {
@@ -325,7 +349,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
                 if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NEW_LOCATION_BROADCAST)) {
                     Location location = intent.getParcelableExtra(GPSService.CURRENT_LOCATION_KEY);
                     BaseActivity.sCurrentLocation = location;
-                    //SharedPrefs.getInstance(getContext()).setLastLatLon(location.getLatitude(), location.getLongitude());
                     mHomeViewModel.setLastLatLon(location.getLatitude(), location.getLongitude());
                     updatePolylineList(location);
                 } else if(intent.getStringExtra(GPSService.BROADCAST_TYPE_KEY).equals(GPSService.NO_LOCATION_BROADCAST)) {

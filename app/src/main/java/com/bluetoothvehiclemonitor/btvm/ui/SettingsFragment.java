@@ -84,8 +84,10 @@ public class SettingsFragment extends DaggerFragment {
         mDeviceAdapter.setOnItemClickListener(new DeviceAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                if(mSettingsViewModel.getIsRunning()) {//SharedPrefs.getInstance(getContext()).getIsRunning()) {
+                if(!mSettingsViewModel.getIsRunning()) {
                     BaseActivity.sBluetoothDevice = mSettingsViewModel.getDevices().get(position);
+                    Log.i(TAG+"BB", BaseActivity.sBluetoothDevice.getName());
+                    Log.i(TAG+"BP", mSettingsViewModel.getDevices().get(position).getName());
                     mSettingsViewModel.setDevice(BaseActivity.sBluetoothDevice.getName(), BaseActivity.sBluetoothDevice.getAddress());
                     Toast.makeText(getActivity(), "Connecting to "+BaseActivity.sBluetoothDevice.getName(), Toast.LENGTH_LONG).show();
                 }
