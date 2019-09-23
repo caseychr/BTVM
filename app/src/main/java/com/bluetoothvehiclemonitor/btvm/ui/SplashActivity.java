@@ -43,6 +43,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     @Inject ViewModelProviderFactory mProviderFactory;
     @Inject RequestManager mRequestManager;
     @Inject Drawable logo;
+    @Inject BottomSheetDialog mDialog;
 
     ViewGroup mViewGroup;
     RecyclerView mRecyclerView;
@@ -50,7 +51,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     View mDeviceView;
     PopupWindow mDeviceWindow;
     SplashViewModel mSplashViewModel;
-    BottomSheetDialog mDialog;
     ProgressBar mProgressBar;
     View mParent;
 
@@ -63,7 +63,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mViewGroup = findViewById(android.R.id.content);
         mProgressBar = findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.VISIBLE);
-        mDialog = new BottomSheetDialog();
+        //mDialog = new BottomSheetDialog();
         mSplashViewModel = ViewModelProviders.of(this, mProviderFactory).get(SplashViewModel.class);
         Log.i(TAG, mSplashViewModel.getSharedPrefsString());
         checkPerms();

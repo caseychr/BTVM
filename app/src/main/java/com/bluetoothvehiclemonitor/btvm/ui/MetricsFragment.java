@@ -82,7 +82,8 @@ public class MetricsFragment extends DaggerFragment {
         mMetricsViewModel.getAllTrips().observe(this, new Observer<List<Trip>>() {
             @Override
             public void onChanged(List<Trip> trips) {
-                mTripList = TestingUtil.getListWithInvalidTripsMixedIn();//trips;
+                Log.i(TAG, "init subscribe");
+                mTripList = trips;//TestingUtil.getListWithInvalidTripsMixedIn();
                 if(checkIfMetricsAreValid()) {
                     initRecycler();
                     mMetricsAdapter.setTrips(mTripList);
@@ -92,10 +93,12 @@ public class MetricsFragment extends DaggerFragment {
     }
 
     private boolean checkIfMetricsAreValid() {
+        Log.i(TAG+" check", mTripList.toString());
         List<Trip> temps = new ArrayList<>();
         if(mTripList.size() <= 0) {
             return false;
         } else {
+            Log.i(TAG+" size", String.valueOf(mTripList.size()));
             for(Trip t:mTripList) {
                 if(t.getMetrics().getDistance() != null &&
                         t.getMetrics().getVehicleSpeed() != null &&
@@ -103,12 +106,15 @@ public class MetricsFragment extends DaggerFragment {
                         t.getMetrics().getCoolantTemp() != null &&
                         t.getMetrics().getAirFlow() != null) {
                     temps.add(t);
+                    Log.i(TAG+" add", t.toString());
                 }
             }
             if(temps.size() > 0) {
                 mTripList = temps;
+                Log.i(TAG+" true", String.valueOf(mTripList.size()));
                 return true;
             } else {
+                Log.i(TAG+" false", String.valueOf(mTripList.size()));
                 return false;
             }
         }
