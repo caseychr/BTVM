@@ -35,13 +35,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     OnItemClickListener mOnItemClickListener;
     int lastCheckedPosition = -1;
 
-    @Inject
-    public DeviceAdapter(List<BluetoothDevice> devices, SharedPrefs sharedPrefs, Context context) {
+    public DeviceAdapter(SharedPrefs sharedPrefs, Context context) {
         mSharedPrefs = sharedPrefs;
         mContext = context;
-        mDevices = devices;
-        Log.i(TAG, mDevices.toString());
-        getStoredDevice();
     }
 
     private void getStoredDevice() {
@@ -69,6 +65,15 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 }
             }
         }
+    }
+
+    public void setDeviceList(List<BluetoothDevice> deviceList) {
+        mDevices = deviceList;
+        getStoredDevice();
+    }
+
+    public String getString() {
+        return "device adapter has been initialized.";
     }
 
     @NonNull

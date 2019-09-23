@@ -32,20 +32,14 @@ Modules:
 
 HOME FRAGMENT
  - Animations -> From Home to Settings and back
-
-BLUETOOTH LIBRARY
- - Fix Bluetooth Library - Fix POLLING
- - Timeout error for not correct bluetooth device
- - Handle Unable to Connect - Show BottomSheetDialog when we cannot connect
+ - Fix UpdateTrip to handle correctly
 
 METRICS FRAGMENT/ADAPTER
  - Fix Lapse in UI Update
- - Do and handle check for valid Metrics
 
 NEW IMPLEMENTATION
  - LiveData - implement
  - DataBinding - implement
- - Dagger 2 - implement
  - Unit Tests - implement
 
 
@@ -55,9 +49,6 @@ Unit Testing
 Google Maps
 
  - 2) Animations
- - 3) Room Setup
- - 4) Dagger 2
- - 6) Google Maps
  - 7) Unit Testing
  - 8) Databinding
  - 9) LiveData

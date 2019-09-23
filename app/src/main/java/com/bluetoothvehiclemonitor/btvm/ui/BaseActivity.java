@@ -2,8 +2,11 @@ package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.location.Location;
+import android.provider.Settings;
 
+import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 
 import java.util.ArrayList;

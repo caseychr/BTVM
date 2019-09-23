@@ -28,16 +28,14 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     boolean isMetric;
     boolean retrievedMetrics = false;
     List<Trip> mTripList;
-    Context mContext;
 
-    public MetricsAdapter(List<Trip> metrics, Context context, boolean isMetric) {
-        mContext = context;
+    /*public MetricsAdapter(List<Trip> metrics, Context context, boolean isMetric) {
         mTripList = metrics;
         this.isMetric = isMetric;
         if(!metrics.isEmpty()) {
             setOverallMetric();
         }
-    }
+    }*/
 
     @NonNull
     @Override
@@ -137,7 +135,8 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    public void setTrips(List<Trip> trips) {
+    public void setTrips(List<Trip> trips, boolean isMetric) {
+        this.isMetric = isMetric;
         mTripList = trips;
         setOverallMetric();
         notifyDataSetChanged();
