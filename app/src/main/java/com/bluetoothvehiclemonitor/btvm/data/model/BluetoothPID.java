@@ -1,5 +1,8 @@
 package com.bluetoothvehiclemonitor.btvm.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -8,7 +11,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "bluetoothPID_table")
 public class BluetoothPID {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mId;
     private float mDistance;
@@ -17,18 +20,27 @@ public class BluetoothPID {
     private float mAirFlow;
     private float mEngineRPM;
 
-
     public BluetoothPID() {
     }
 
     @Ignore
     public BluetoothPID(float distance, float vehicleSpeed, float coolantTemp, float airFlow,
             float engineRPM) {
+
         mDistance = distance;
         mVehicleSpeed = vehicleSpeed;
         mCoolantTemp = coolantTemp;
         mAirFlow = airFlow;
         mEngineRPM = engineRPM;
+    }
+
+    protected BluetoothPID(Parcel in) {
+        mId = in.readInt();
+        mDistance = in.readFloat();
+        mVehicleSpeed = in.readFloat();
+        mCoolantTemp = in.readFloat();
+        mAirFlow = in.readFloat();
+        mEngineRPM = in.readFloat();
     }
 
     public int getId() {

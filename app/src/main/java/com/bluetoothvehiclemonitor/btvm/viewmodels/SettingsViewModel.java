@@ -5,8 +5,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
+import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
+import com.bluetoothvehiclemonitor.btvm.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
+import androidx.navigation.Navigation;
 
 public class SettingsViewModel extends AndroidViewModel {
     private static final String TAG = "SettingsViewModel";

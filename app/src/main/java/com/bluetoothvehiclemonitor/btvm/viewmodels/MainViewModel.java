@@ -17,7 +17,6 @@ public class MainViewModel extends AndroidViewModel {
     public TripRepository mTripRepository;
 
     Application mApplication;
-    //TripDap mDao
 
     @Inject
     public MainViewModel(@NonNull Application application, TripRepository tripRepository) {

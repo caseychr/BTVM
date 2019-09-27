@@ -70,6 +70,10 @@ public class TripRepository {
         new UpdateTripAsyncTask(mTripDao).execute(trip);
     }
 
+    public void deleteTrip(Trip trip) {
+        new DeleteTripAsyncTask(mTripDao).execute(trip);
+    }
+
     public LiveData<Trip> getLatestTrip() {
         return mTripDao.getLatestTrip();
     }
@@ -78,7 +82,7 @@ public class TripRepository {
         return mTripDao.getAllTrips();
     }
 
-    public static class InsertTripAsyncTask extends AsyncTask<Trip, Void, Void> {
+    public class InsertTripAsyncTask extends AsyncTask<Trip, Void, Void> {
         private TripDao tripDao;
 
         private InsertTripAsyncTask(TripDao tripDao) {
@@ -92,7 +96,7 @@ public class TripRepository {
         }
     }
 
-    public static class UpdateTripAsyncTask extends AsyncTask<Trip, Void, Void> {
+    public class UpdateTripAsyncTask extends AsyncTask<Trip, Void, Void> {
         private TripDao tripDao;
 
         private UpdateTripAsyncTask(TripDao tripDao) {
@@ -101,7 +105,25 @@ public class TripRepository {
 
         @Override
         protected Void doInBackground(Trip... trips) {
-            tripDao.update(trips[0]);
+            if(trips[0] != null) {
+                tripDao.update(trips[0]);
+            }
+            return null;
+        }
+    }
+
+    public class DeleteTripAsyncTask extends AsyncTask<Trip, Void, Void> {
+        private TripDao tripDao;
+
+        private DeleteTripAsyncTask(TripDao tripDao) {
+            this.tripDao = tripDao;
+        }
+
+        @Override
+        protected Void doInBackground(Trip... trips) {
+            if(trips[0] != null) {
+                tripDao.delete(trips[0]);
+            }
             return null;
         }
     }

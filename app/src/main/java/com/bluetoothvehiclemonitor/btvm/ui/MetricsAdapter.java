@@ -1,6 +1,5 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +25,7 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static final int METRIC = 1;
 
     boolean isMetric;
-    boolean retrievedMetrics = false;
     List<Trip> mTripList;
-
-    /*public MetricsAdapter(List<Trip> metrics, Context context, boolean isMetric) {
-        mTripList = metrics;
-        this.isMetric = isMetric;
-        if(!metrics.isEmpty()) {
-            setOverallMetric();
-        }
-    }*/
 
     @NonNull
     @Override
@@ -143,13 +133,10 @@ public class MetricsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setOverallMetric() {
-        if(!retrievedMetrics) {
-            Metrics metrics = MetricsUtil.getOverallMetrics(mTripList);
-            Trip trip = new Trip(DateUtil.getStringFromCurrentDate());
-            trip.setMetrics(metrics);
-            mTripList.add(0, trip);
-            retrievedMetrics = true;
-        }
+        Metrics metrics = MetricsUtil.getOverallMetrics(mTripList);
+        Trip trip = new Trip(DateUtil.getStringFromCurrentDate());
+        trip.setMetrics(metrics);
+        mTripList.add(0, trip);
     }
 
     private class OverallMetricsViewHolder extends RecyclerView.ViewHolder {

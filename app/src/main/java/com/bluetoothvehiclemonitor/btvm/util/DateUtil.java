@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 
 public class DateUtil {
 
-    //public static final String SIMPLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSSSSS";
-
     public static final String SIMPLE_DATE_FORMAT = "MM-dd-yyyy HH:mm:ss";
 
 

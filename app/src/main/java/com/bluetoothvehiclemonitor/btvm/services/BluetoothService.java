@@ -29,6 +29,10 @@ public class BluetoothService extends IntentService {
         return new Intent(context, BluetoothService.class);
     }
 
+    public static void setStillRunning(boolean r) {
+        BluetoothController.STILL_RUNNING = r;
+    }
+
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         mBluetoothController.init(mContext);

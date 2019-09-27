@@ -1,7 +1,6 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ public class SettingsFragment extends DaggerFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSettingsViewModel = ViewModelProviders.of(this, mProviderFactory).get(SettingsViewModel.class);
-        Log.i(TAG, mSettingsViewModel.getSharedPrefsString());
     }
 
     @Nullable
@@ -85,8 +83,6 @@ public class SettingsFragment extends DaggerFragment {
             public void onClick(int position) {
                 if(!mSettingsViewModel.getIsRunning()) {
                     BaseActivity.sBluetoothDevice = mSettingsViewModel.getDevices().get(position);
-                    Log.i(TAG+"BB", BaseActivity.sBluetoothDevice.getName());
-                    Log.i(TAG+"BP", mSettingsViewModel.getDevices().get(position).getName());
                     mSettingsViewModel.setDevice(BaseActivity.sBluetoothDevice.getName(), BaseActivity.sBluetoothDevice.getAddress());
                     Toast.makeText(getActivity(), "Connecting to "+BaseActivity.sBluetoothDevice.getName(), Toast.LENGTH_LONG).show();
                 }

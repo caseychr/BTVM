@@ -1,13 +1,11 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,14 +63,13 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
     TextView mCoolantTv;
     TextView mAirFlowTv;
     TextView mRPMTv;
-    ProgressBar mProgressBar; //TODO need to show when BT is running
+    ProgressBar mProgressBar; //TODO need to show when BT is running //Databind
     GoogleMap mGoogleMap;
 
     private HomeViewModel mHomeViewModel;
     private boolean mIsRunning = false;
     Intent mBluetoothService;
     Intent mGPSService;
-    String errorMessage;
 
     List<LatLng> mLocationList = new ArrayList<>();
     Trip mTrip;
@@ -86,11 +83,10 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         setHasOptionsMenu(true);
         initBroadcastIntent();
         mLocationReceiver = new LocationReceiver();
-        //mDialog = new BottomSheetDialog();
         getActivity().registerReceiver(mLocationReceiver, mIntentFilter);
         mHomeViewModel = ViewModelProviders.of(this, mProviderFactory).get(HomeViewModel.class);
         mGPSService = GPSService.newIntent(getActivity());
-        mIsRunning = mHomeViewModel.getIsRunning();//SharedPrefs.getInstance(getContext()).getIsRunning();
+        mIsRunning = mHomeViewModel.getIsRunning();
         Log.i(TAG, mHomeViewModel.getSharedPrefsString());
     }
 
@@ -190,7 +186,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         updatePolylineList(BaseActivity.sCurrentLocation);
         mBluetoothService = BluetoothService.newIntent(getContext(),
                 BaseActivity.sBluetoothDevice, HomeFragment.this);
-        Log.i(TAG, mTrip.getTimeStamp());
         subscribeObservers();
         getActivity().startService(mGPSService);
         getActivity().startService(mBluetoothService);
@@ -200,9 +195,11 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         mStartTv.setText(getString(R.string.btn_start));
         MapsUtil.animateMapWithBounds(HomeFragment.this, mGoogleMap, mLocationList);
         GPSService.stopLocationPolling();
+        BluetoothService.setStillRunning(false);
         mBTRunning.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         mTrip.setMetrics(MetricsUtil.getTripMetrics(mTrip.getMetrics().getBluetoothPIDS()));
+        mHomeViewModel.updateTrip(mTrip);
         getActivity().stopService(mGPSService);
         getActivity().stopService(mBluetoothService);
     }
@@ -242,7 +239,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
                         Float.valueOf(mAirFlowNumTv.getText().toString()), Float.valueOf(mRPMNumTv.getText().toString())));
                 mHomeViewModel.updateTrip(mTrip);
             }
-            Log.i(TAG, "current trip "+mTrip);
         }
     }
 
@@ -298,8 +294,15 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
 
     @Override
     public void updateErrorMessage(String s) {
-        stopPressed();
+        mStartTv.setText(getString(R.string.btn_start));
+        GPSService.stopLocationPolling();
+        mBTRunning.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
+        getActivity().stopService(mGPSService);
+        getActivity().stopService(mBluetoothService);
+        mIsRunning = false;
         mHomeViewModel.setIsRunning(false);
+        mHomeViewModel.deleteTrip(mTrip);
         mDialog.show(getActivity().getSupportFragmentManager(), "bt");
 
     }
@@ -315,7 +318,6 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
                     }
                 }
                 mTrip = trip;
-                Log.i(TAG+" SO", trip.toString());
             }
         });
     }
