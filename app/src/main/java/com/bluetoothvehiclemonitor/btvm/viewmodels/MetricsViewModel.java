@@ -2,7 +2,6 @@ package com.bluetoothvehiclemonitor.btvm.viewmodels;
 
 import android.app.Application;
 
-import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
 

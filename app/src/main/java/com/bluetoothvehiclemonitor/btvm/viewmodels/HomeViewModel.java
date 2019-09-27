@@ -50,6 +50,10 @@ public class HomeViewModel extends AndroidViewModel {
         mTripRepository.updateTrip(trip);
     }
 
+    public void deleteTrip(Trip trip) {
+        mTripRepository.deleteTrip(trip);
+    }
+
     public Double[] getLastLatLon() {
         return mTripRepository.getLastLatLon();
     }

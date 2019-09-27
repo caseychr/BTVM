@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +13,9 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.util.PermissionsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.SplashViewModel;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
@@ -63,10 +62,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mViewGroup = findViewById(android.R.id.content);
         mProgressBar = findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.VISIBLE);
-        //mDialog = new BottomSheetDialog();
         mSplashViewModel = ViewModelProviders.of(this, mProviderFactory).get(SplashViewModel.class);
-        Log.i(TAG, mSplashViewModel.getSharedPrefsString());
-        Log.i(TAG, mDeviceAdapter.getString());
         checkPerms();
     }
 
@@ -158,6 +154,25 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         }
     }
 
+    public void storeLocation(Location location) {
+        if(location == null) {
+            if(!mSplashViewModel.mSharedPrefs.mSharedPrefs.contains(SharedPrefs.PREF_LAST_KNOWN_LAT)) {
+                mSplashViewModel.mSharedPrefs.setLastLatLon(33.900396, -84.277227);
+                sCurrentLocation = new Location("location_default");
+                sCurrentLocation.setLatitude(33.900396);
+                sCurrentLocation.setLongitude(-84.277227);
+            } else {
+                sCurrentLocation = new Location("location_shared_prefs");
+                Double[] d = mSplashViewModel.mSharedPrefs.getLastLatLon();
+                sCurrentLocation.setLatitude(d[0]);
+                sCurrentLocation.setLongitude(d[1]);
+            }
+        } else {
+            sCurrentLocation = location;
+            mSplashViewModel.mSharedPrefs.setLastLatLon(location.getLatitude(), location.getLongitude());
+        }
+    }
+
     private void getDeviceLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try{
@@ -166,20 +181,13 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if(task.isSuccessful()) { // We send currentLocation to broadcastLocation and then check for NULL
-                        sCurrentLocation = (Location) task.getResult();
-                        mSplashViewModel.mSharedPrefs.setLastLatLon(sCurrentLocation.getLatitude(), sCurrentLocation.getLongitude());
+                        storeLocation((Location) task.getResult());
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Double[] prefsLatLon = mSplashViewModel.mSharedPrefs.getLastLatLon();
-
-                    sCurrentLocation = null;
-                    sCurrentLocation.setLatitude(prefsLatLon[0]);
-                    sCurrentLocation.setLongitude(prefsLatLon[1]);
-                Toast.makeText(SplashActivity.this, "Unable to retrieve current location. Using last known location\n"
-                        + sCurrentLocation.getLatitude()+", "+sCurrentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    storeLocation(null);
                 }
             });
         } catch (SecurityException e) {

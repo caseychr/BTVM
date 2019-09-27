@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         getMenuInflater().inflate(R.menu.activity_main, menu);
         if(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment).getChildFragmentManager().getFragments().get(0)
                 instanceof SettingsFragment) {
-            menu.getItem(0).setTitle("METRICS");
+            menu.getItem(0).setTitle(getString(R.string.metrics_title));
         } else if(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment).getChildFragmentManager().getFragments().get(0)
                 instanceof MetricsFragment) {
             menu.setGroupVisible(0, false);
@@ -96,6 +96,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNavigationView.setNavigationItemSelectedListener(this);
     }
 
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -106,7 +108,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.nav_settings: {
                 if(isValidDestination(R.id.settingsFragment)){
-                    Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.settingsFragment, null);
+                    Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
                 }
                 break;
             }
@@ -119,7 +121,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.menu_item: {
                 if(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination().equals(HomeFragment.class)) {
                     if(isValidDestination(R.id.menu_item)) {
-                        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
+                        Navigation.findNavController(this, R.id.nav_host_fragment)
+                                .navigate(R.id.settingsFragment);
                     }
                 } else if(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination()
                         .equals(SettingsFragment.class)) {

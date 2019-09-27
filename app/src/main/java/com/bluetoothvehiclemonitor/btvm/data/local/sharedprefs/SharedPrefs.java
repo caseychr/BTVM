@@ -11,11 +11,9 @@ import javax.inject.Singleton;
 public class SharedPrefs {
     private static final String TAG = "SharedPrefs";
 
-    private static SharedPrefs instance;
-
     public static final String PREF_BT_DEVICE_NAME = "PREF_BT_DEVICE_NAME";
     private static final String PREF_BT_DEVICE_ADDRESS = "PREF_BT_DEVICE_ADDRESS";
-    private static final String PREF_LAST_KNOWN_LAT = "PREF_LAST_KNOWN_LAT";
+    public static final String PREF_LAST_KNOWN_LAT = "PREF_LAST_KNOWN_LAT";
     private static final String PREF_LAST_KNOWN_LON = "PREF_LAST_KNOWN_LON";
     private static final String PREF_BT_DEVICE_CONNECTED = "PREF_BT_DEVICE_CONNECTED";
     private static final String PREF_METRIC = "PREF_METRIC";

@@ -25,9 +25,12 @@ public class BluetoothController {
     public static final int MESSAGE_TOAST_LOST = 5;
     public static final int MESSAGE_TOAST_UNABLE = 6;
 
+
     // Initialize send and receive classes for BT
     private MessageInquirer mMessageInquirer;
     private MessageReceptor mMessageReceptor;
+    private int checkStopInts = 0;
+    public static boolean STILL_RUNNING = false;
 
     Context mContext;
     static MessageUpdate mMessageUpdate;
@@ -44,6 +47,7 @@ public class BluetoothController {
         if(timeframe.equals("INITIAL_READ")){
         } else if(timeframe.equals("POLLING")){
             Log.i(TAG, "in polling");
+            STILL_RUNNING = true;
             BluetoothConnector.getInstance()
                     .createCountdownTimer(
                             10000, 1000);
@@ -85,16 +89,22 @@ public class BluetoothController {
         Log.i(TAG, "checkStop");
         if(PIDS.getDistance() != null && PIDS.getCoolantTemp() != null && PIDS.getEngineRPM() != null &&
                 PIDS.getAirFlow() != null && PIDS.getVehicleSpeed() != null) {
-            exit(true);
+            Log.i(TAG, String.valueOf(checkStopInts));
+            if(checkStopInts > 19) {
+                exit();
+                checkStopInts = 0;
+            } else {
+                checkStopInts++;
+            }
         }
     }
 
     /**
      * Closes BluetoothService socket
      */
-    public static void exit(boolean stillPolling) {
+    public static void exit() {
         mMessageUpdate.updateBTConnected(false);
-        BluetoothConnector.getInstance().stop(stillPolling);
+        BluetoothConnector.getInstance().stop(STILL_RUNNING);
     }
 
     /**
@@ -104,7 +114,7 @@ public class BluetoothController {
     public static void reportError(String message) {
         if (message != null){
             Log.i(TAG, "reportError: "+message);
-            exit(false);
+            exit();
             PIDS.setErrorMessage(message);
             mMessageUpdate.updateErrorMessage(message);
         }

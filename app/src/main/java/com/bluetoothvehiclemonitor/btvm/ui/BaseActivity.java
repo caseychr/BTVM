@@ -19,12 +19,8 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public abstract class BaseActivity extends DaggerAppCompatActivity {
 
-    //@Inject
-    //public SharedPrefs mSharedPrefs;
-
     public static BluetoothDevice sBluetoothDevice;
     public static Location sCurrentLocation;
-    public static List<Location> mPolylines = new ArrayList<>();
 
     public static void setTitle(Activity activity, int title) {
         activity.setTitle(title);

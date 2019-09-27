@@ -41,6 +41,8 @@ NEW IMPLEMENTATION
  - LiveData - implement
  - DataBinding - implement
  - Unit Tests - implement
+ - Change Distance to Service Miles
+ - Save PIDS, trip in savedState Bundle
 
 
 MVVM

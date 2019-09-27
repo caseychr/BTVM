@@ -20,17 +20,13 @@ public class PermissionsUtil {
             Manifest.permission.ACCESS_FINE_LOCATION};
 
     public static boolean getLocationPerms(Activity activity) {
-        Log.i(TAG, "getAllLocPerms");
         if(ContextCompat.checkSelfPermission(activity, LocationPerms[0]) == PackageManager.PERMISSION_GRANTED) {
             if(ContextCompat.checkSelfPermission(activity, LocationPerms[1]) == PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "Loc Perms TRUE");
                 mLocationPermissionGranted = true;
             } else {
-                Log.i(TAG, "Loc Perms FALSE");
                 ActivityCompat.requestPermissions(activity, LocationPerms, LOCATION_PERMISSION_REQUEST_CODE);
             }
-        } else {Log.i(TAG, "Loc Perms FALSE2");
-
+        } else {
             ActivityCompat.requestPermissions(activity, LocationPerms, LOCATION_PERMISSION_REQUEST_CODE);
         }
         return (mLocationPermissionGranted);

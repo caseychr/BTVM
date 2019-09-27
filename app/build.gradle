@@ -16,6 +16,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding{
+        enabled=true
+    }
 }
 
 dependencies {
@@ -27,13 +31,21 @@ dependencies {
     def PARCELER_VERSION = '1.0.3'
     def retrofitVersion = "2.5.0"
     def dagger_version = "2.24"
+    def junit_jupiter_version = "5.3.2"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // -------- LOCAL UNIT TESTS (use JUnit5)
+    //
+    // JUnit Jupiter
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
 
     //Dagger 2
     implementation "com.google.dagger:dagger:$dagger_version"

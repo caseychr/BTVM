@@ -99,8 +99,6 @@ public class SplashViewModel extends AndroidViewModel {
                         }
                     } else if(mAdapter.getBondedDevices().size() == 1) {
                         BaseActivity.sBluetoothDevice = mDevices.get(0);
-                        /*SharedPrefs.getInstance(activity).setDevice(BaseActivity.sBluetoothDevice.getName(),
-                                BaseActivity.sBluetoothDevice.getAddress());*/
                         mSharedPrefs.setDevice(BaseActivity.sBluetoothDevice.getName(),
                                 BaseActivity.sBluetoothDevice.getAddress());
                         if(PermissionsUtil.mLocationPermissionGranted) {
@@ -134,6 +132,7 @@ public class SplashViewModel extends AndroidViewModel {
             intent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
             mDialogTv = null;
             activity.startActivity(intent);
+            activity.finish();
         } else if(mBtnDialog.equals(activity.getString(R.string.perms_btn_bt_choose_device))) {
             mDialogTv = null;
             return false;
