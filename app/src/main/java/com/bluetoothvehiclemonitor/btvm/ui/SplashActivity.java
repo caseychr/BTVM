@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mProgressBar.setVisibility(View.VISIBLE);
         mSplashViewModel = ViewModelProviders.of(this, mProviderFactory).get(SplashViewModel.class);
         checkPerms();
+        //checkOnboard();
     }
 
     private void setLogo() {
@@ -103,7 +105,9 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     }
 
     public void checkPerms() {
+        Log.i(TAG, "checkPerms");
         if(!mSplashViewModel.checkBluetoothRequirements(this) && mSplashViewModel.mDialogTv != null) {
+            Log.i(TAG, "ccc");
             mDialog.show(getSupportFragmentManager(), "error");
         } else if (!mSplashViewModel.checkBluetoothRequirements(this)){
             if(mSplashViewModel.getAllPermissions(this)) {
@@ -157,17 +161,20 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     public void storeLocation(Location location) {
         if(location == null) {
             if(!mSplashViewModel.mSharedPrefs.mSharedPrefs.contains(SharedPrefs.PREF_LAST_KNOWN_LAT)) {
+                Log.i(TAG, "get default");
                 mSplashViewModel.mSharedPrefs.setLastLatLon(33.900396, -84.277227);
                 sCurrentLocation = new Location("location_default");
                 sCurrentLocation.setLatitude(33.900396);
                 sCurrentLocation.setLongitude(-84.277227);
             } else {
+                Log.i(TAG, "get from SP");
                 sCurrentLocation = new Location("location_shared_prefs");
                 Double[] d = mSplashViewModel.mSharedPrefs.getLastLatLon();
                 sCurrentLocation.setLatitude(d[0]);
                 sCurrentLocation.setLongitude(d[1]);
             }
         } else {
+            Log.i(TAG, "got Actual loc");
             sCurrentLocation = location;
             mSplashViewModel.mSharedPrefs.setLastLatLon(location.getLatitude(), location.getLongitude());
         }

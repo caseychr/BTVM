@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluetoothvehiclemonitor.btvm.R;
+import com.bluetoothvehiclemonitor.btvm.bluetooth.MessageUpdate;
+import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
 import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.services.BluetoothService;
@@ -25,7 +27,6 @@ import com.bluetoothvehiclemonitor.btvm.util.DateUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MapsUtil;
 import com.bluetoothvehiclemonitor.btvm.util.MetricsUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.HomeViewModel;
-import com.bluetoothvehiclemonitor.btvm.bluetooth.MessageUpdate;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -97,6 +98,7 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         mView = inflater.inflate(R.layout.fragment_home, container, false);
         BaseActivity.setTitle(getActivity(), R.string.home_title);
         initMap();
+        Log.i(TAG, "onCreateView");
         initCard();
         return mView;
     }
@@ -146,6 +148,17 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
         mCoolantNumTv = mView.findViewById(R.id.tv_coolant_num);
         mAirFlowNumTv = mView.findViewById(R.id.tv_airflow_num);
         mRPMNumTv = mView.findViewById(R.id.tv_engine_num);
+        if(mIsRunning) {
+            if(mHomeViewModel.getSharedPrefs().mSharedPrefs.contains(SharedPrefs.PREF_PID_DISTANCE)) {
+                BluetoothPID b = mHomeViewModel.getRunningBT();
+                Log.i(TAG+" store_PIDS", mHomeViewModel.getRunningBT().toString());
+                mDistanceNumTv.setText(String.valueOf(b.getDistance()));
+                mSpeedNumTv.setText(String.valueOf(b.getVehicleSpeed()));
+                mCoolantNumTv.setText(String.valueOf(b.getCoolantTemp()));
+                mAirFlowNumTv.setText(String.valueOf(b.getAirFlow()));
+                mRPMNumTv.setText(String.valueOf(b.getEngineRPM()));
+            }
+        }
 
         mDistanceTv = mView.findViewById(R.id.tv_service_miles);
         mSpeedTv = mView.findViewById(R.id.tv_speed);
@@ -238,6 +251,11 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
                         Float.valueOf(mSpeedNumTv.getText().toString()), Float.valueOf(mCoolantNumTv.getText().toString()),
                         Float.valueOf(mAirFlowNumTv.getText().toString()), Float.valueOf(mRPMNumTv.getText().toString())));
                 mHomeViewModel.updateTrip(mTrip);
+                if(mIsRunning) {
+                    Log.i(TAG+" store_PIDS", "setting PIDs");
+                    //mHomeViewModel.setRunningBT(new BluetoothPID(4, 4, 4, 4, 4));
+                    mHomeViewModel.setRunningBT(mTrip.getMetrics().getBluetoothPIDS().get(mTrip.getMetrics().getBluetoothPIDS().size()-1));
+                }
             }
         }
     }

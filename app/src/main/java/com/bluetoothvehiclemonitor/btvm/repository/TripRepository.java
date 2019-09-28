@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import com.bluetoothvehiclemonitor.btvm.data.local.room.BTVMDatabase;
 import com.bluetoothvehiclemonitor.btvm.data.local.room.TripDao;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
 import java.util.List;
@@ -60,6 +61,14 @@ public class TripRepository {
 
     public void setIsRunning(boolean running) {
         mSharedPrefs.setIsRunning(running);
+    }
+
+    public BluetoothPID getRunningBT() {
+        return mSharedPrefs.getLastPID();
+    }
+
+    public void setRunningBT(BluetoothPID bluetoothPID) {
+        mSharedPrefs.setLastPID(bluetoothPID);
     }
 
     public void insertTrip(Trip trip) {

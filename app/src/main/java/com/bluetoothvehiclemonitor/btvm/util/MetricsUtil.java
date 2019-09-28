@@ -4,10 +4,13 @@ import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Metrics;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class MetricsUtil {
     private static final String TAG = "MetricsUtil";
+
+    public static final DecimalFormat df = new DecimalFormat("0.00");
 
     public static Metrics getOverallMetrics(List<Trip> trips) {
         if(trips == null || (trips.get(0).getMetrics().getAirFlow() == null || trips.get(0).getMetrics().getCoolantTemp()  == null ||
@@ -33,8 +36,8 @@ public class MetricsUtil {
             engineRPM = engineRPM/trips.size();
             coolant = coolant/trips.size();
             speed = speed/trips.size();
-            metrics = new Metrics( String.valueOf(distance), String.valueOf(airflow), String.valueOf(engineRPM),
-                    String.valueOf(coolant), String.valueOf(speed));
+            metrics = new Metrics( String.valueOf(df.format(distance)), String.valueOf(df.format(airflow)),
+                    String.valueOf(df.format(engineRPM)), String.valueOf(df.format(coolant)), String.valueOf(df.format(speed)));
             return metrics;
         }
     }
@@ -50,7 +53,7 @@ public class MetricsUtil {
             float speed = 0;
             float distance = 0;
             for(int i=0;i<bluetoothPIDS.size();i++) {
-                airflow += bluetoothPIDS.get(i).getAirFlow();
+                airflow += Math.round(bluetoothPIDS.get(i).getAirFlow());
                 engineRPM += bluetoothPIDS.get(i).getEngineRPM();
                 coolant += bluetoothPIDS.get(i).getCoolantTemp();
                 speed += bluetoothPIDS.get(i).getVehicleSpeed();
@@ -62,8 +65,9 @@ public class MetricsUtil {
             engineRPM = engineRPM/bluetoothPIDS.size();
             coolant = coolant/bluetoothPIDS.size();
             speed = speed/bluetoothPIDS.size();
-            metrics = new Metrics(String.valueOf(distance), String.valueOf(airflow), String.valueOf(engineRPM),
-                    String.valueOf(coolant), String.valueOf(speed), bluetoothPIDS);
+            metrics = new Metrics( String.valueOf(df.format(distance)), String.valueOf(df.format(airflow)),
+                    String.valueOf(df.format(engineRPM)), String.valueOf(df.format(coolant)), String.valueOf(df.format(speed)),
+                    bluetoothPIDS);
             return metrics;
         }
     }
