@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -11,6 +13,7 @@ import javax.inject.Singleton;
 public class SharedPrefs {
     private static final String TAG = "SharedPrefs";
 
+    public static final String PREF_ONBOARDED = "PREF_ONBOARDED";
     public static final String PREF_BT_DEVICE_NAME = "PREF_BT_DEVICE_NAME";
     private static final String PREF_BT_DEVICE_ADDRESS = "PREF_BT_DEVICE_ADDRESS";
     public static final String PREF_LAST_KNOWN_LAT = "PREF_LAST_KNOWN_LAT";
@@ -18,6 +21,11 @@ public class SharedPrefs {
     private static final String PREF_BT_DEVICE_CONNECTED = "PREF_BT_DEVICE_CONNECTED";
     private static final String PREF_METRIC = "PREF_METRIC";
     private static final String PREF_RUNNING = "PREF_RUNNING";
+    public static final String PREF_PID_DISTANCE = "PREF_PID_DISTANCE";
+    private static final String PREF_PID_COOLANT = "PREF_PID_COOLANT";
+    private static final String PREF_PID_AIRFLOW = "PREF_PID_AIRFLOW";
+    private static final String PREF_PID_RPM = "PREF_PID_RPM";
+    private static final String PREF_PID_SPEED = "PREF_PID_SPEED";
 
     public SharedPreferences mSharedPrefs;
     public SharedPreferences.Editor mEditor;
@@ -28,6 +36,16 @@ public class SharedPrefs {
 
     public String getString() {
         return "String in Shared Prefs";
+    }
+
+    public boolean getOnboarded() {
+        return mSharedPrefs.getBoolean(PREF_ONBOARDED, false);
+    }
+
+    public void setOnBoarded(boolean onBoarded) {
+        mEditor = mSharedPrefs.edit();
+        mEditor.putBoolean(PREF_ONBOARDED, onBoarded);
+        mEditor.commit();
     }
 
     public String[] getDevice() {
@@ -85,6 +103,37 @@ public class SharedPrefs {
     public void setIsRunning(boolean isRunning) {
         mEditor = mSharedPrefs.edit();
         mEditor.putBoolean(PREF_RUNNING, isRunning);
+        mEditor.commit();
+    }
+
+    public BluetoothPID getLastPID() {
+        String[] lastLatLon = new String[5];
+        lastLatLon[0] = mSharedPrefs.getString(PREF_PID_DISTANCE, null);
+        lastLatLon[1] = mSharedPrefs.getString(PREF_PID_COOLANT, null);
+        lastLatLon[2] = mSharedPrefs.getString(PREF_PID_RPM, null);
+        lastLatLon[3] = mSharedPrefs.getString(PREF_PID_AIRFLOW, null);
+        lastLatLon[4] = mSharedPrefs.getString(PREF_PID_SPEED, null);
+        BluetoothPID bluetoothPID =
+                new BluetoothPID(
+                        Float.parseFloat(lastLatLon[0]), Float.parseFloat(lastLatLon[4]),
+                Float.parseFloat(lastLatLon[1]), Float.parseFloat(lastLatLon[3]), Float.parseFloat(lastLatLon[2]));
+        return bluetoothPID;
+    }
+
+    public void setLastPID(BluetoothPID bluetoothPID) {
+        mEditor = mSharedPrefs.edit();
+        if(bluetoothPID == null) {
+            mEditor.remove(PREF_PID_DISTANCE);
+            mEditor.remove(PREF_PID_COOLANT);
+            mEditor.remove(PREF_PID_AIRFLOW);
+            mEditor.remove(PREF_PID_SPEED);
+            mEditor.remove(PREF_PID_RPM);
+        }
+        mEditor.putString(PREF_PID_DISTANCE, String.valueOf(bluetoothPID.getDistance()));
+        mEditor.putString(PREF_PID_COOLANT, String.valueOf(bluetoothPID.getCoolantTemp()));
+        mEditor.putString(PREF_PID_AIRFLOW, String.valueOf(bluetoothPID.getAirFlow()));
+        mEditor.putString(PREF_PID_SPEED, String.valueOf(bluetoothPID.getVehicleSpeed()));
+        mEditor.putString(PREF_PID_RPM, String.valueOf(bluetoothPID.getEngineRPM()));
         mEditor.commit();
     }
 }

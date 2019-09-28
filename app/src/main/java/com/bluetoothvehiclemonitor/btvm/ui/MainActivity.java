@@ -76,7 +76,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.menu_item: {
                 if(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment).getChildFragmentManager().getFragments().get(0)
                  instanceof HomeFragment) {
-                    Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
+                    Navigation.findNavController(this, R.id.nav_host_fragment)
+                            .navigate(R.id.settingsFragment);
                 } else if(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment).getChildFragmentManager().getFragments().get(0)
                         instanceof SettingsFragment) {
                     Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.metricsFragment);

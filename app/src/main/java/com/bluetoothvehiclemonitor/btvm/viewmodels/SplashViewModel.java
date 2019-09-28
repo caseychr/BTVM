@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
@@ -98,21 +99,30 @@ public class SplashViewModel extends AndroidViewModel {
                             return true;
                         }
                     } else if(mAdapter.getBondedDevices().size() == 1) {
+                        Log.i(TAG, "here2");
                         BaseActivity.sBluetoothDevice = mDevices.get(0);
                         mSharedPrefs.setDevice(BaseActivity.sBluetoothDevice.getName(),
                                 BaseActivity.sBluetoothDevice.getAddress());
                         if(PermissionsUtil.mLocationPermissionGranted) {
+                            Log.i(TAG, "here6");
                             return true;
+                        } else {
+                            getAllPermissions(activity);
                         }
                     } else {
+                        Log.i(TAG, "here3");
                         mDialogTv = activity.getString(R.string.perms_error_btn_no_connect_device);
                         mBtnDialog = activity.getString(R.string.perms_btn_bt_choose_device);
+                        return false;
                     }
                 } else {
+                    Log.i(TAG, "here4");
                     mDialogTv = activity.getString(R.string.perms_error_bt_no_paired_devices);
                     mBtnDialog = activity.getString(R.string.perms_btn_bt_settings);
+                    return false;
                 }
             } else {
+                Log.i(TAG, "here5");
                 mDialogTv = activity.getString(R.string.perms_error_bt_not_on);
                 mBtnDialog = activity.getString(R.string.perms_btn_bt_on);
             }
@@ -124,6 +134,10 @@ public class SplashViewModel extends AndroidViewModel {
         Intent intent;
         if(mBtnDialog.equals(activity.getString(R.string.perms_btn_close_app))) {
             activity.finish();
+        } else if(mBtnDialog.equals("OK")) {
+            Log.i(TAG, "here ok");
+            mSharedPrefs.setOnBoarded(true);
+            checkBluetoothRequirements(activity);
         } else if(mBtnDialog.equals(activity.getString(R.string.perms_btn_bt_on))) {
             intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             mDialogTv = null;

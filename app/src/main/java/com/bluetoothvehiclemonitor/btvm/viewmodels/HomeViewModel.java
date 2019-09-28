@@ -3,6 +3,7 @@ package com.bluetoothvehiclemonitor.btvm.viewmodels;
 import android.app.Application;
 
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+import com.bluetoothvehiclemonitor.btvm.data.model.BluetoothPID;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
 import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
 
@@ -68,5 +69,15 @@ public class HomeViewModel extends AndroidViewModel {
 
     public void setIsRunning(boolean running) {
         mTripRepository.setIsRunning(running);
+    }
+
+    public SharedPrefs getSharedPrefs(){return mTripRepository.mSharedPrefs;}
+
+    public BluetoothPID getRunningBT() {
+        return mTripRepository.getRunningBT();
+    }
+
+    public void setRunningBT(BluetoothPID bluetoothPID) {
+        mTripRepository.setRunningBT(bluetoothPID);
     }
 }
