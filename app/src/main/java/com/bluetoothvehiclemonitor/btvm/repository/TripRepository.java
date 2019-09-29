@@ -31,6 +31,14 @@ public class TripRepository {
         return mSharedPrefs.getString();
     }
 
+    public boolean getHasOnboarded() {
+        return mSharedPrefs.getOnboarded();
+    }
+
+    public void setHasOnboarded(boolean hasOnboarded) {
+        mSharedPrefs.setOnBoarded(hasOnboarded);
+    }
+
     public String[] getDevice() {
         return mSharedPrefs.getDevice();
     }

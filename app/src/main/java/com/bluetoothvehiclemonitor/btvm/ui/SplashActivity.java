@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
@@ -53,6 +54,10 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     ProgressBar mProgressBar;
     View mParent;
 
+    TextView mAppInfo;
+    TextView mTvNoShow;
+    TextView mTvOk;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +82,30 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         Intent intent = MainActivity.newIntent(this);
         startActivity(intent);
         finish();
+    }
+
+    private void initAppInfo() {
+        mAppInfo = findViewById(R.id.tv_app_description);
+        mTvOk = findViewById(R.id.tv_ok);
+        mTvNoShow = findViewById(R.id.tv_no_show);
+        mProgressBar.setVisibility(View.GONE);
+        mAppInfo.setVisibility(View.VISIBLE);
+        mTvOk.setVisibility(View.VISIBLE);
+        mTvNoShow.setVisibility(View.VISIBLE);
+        mTvOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPermissionSuccess();
+            }
+        });
+        mTvNoShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSplashViewModel.setHasOnBoarded(true);
+                onPermissionSuccess();
+            }
+        });
+
     }
 
     private void initDeviceWindow() {
@@ -108,11 +137,27 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         } else if (!mSplashViewModel.checkBluetoothRequirements(this)){
             if(mSplashViewModel.getAllPermissions(this)) {
                 getDeviceLocation();
-                onPermissionSuccess();
+                if(mSplashViewModel.getSharedPrefs().mSharedPrefs.contains(SharedPrefs.PREF_ONBOARDED)) {
+                    if(mSplashViewModel.getHasOnBoarded()) {
+                        onPermissionSuccess();
+                    } else {
+                        initAppInfo();
+                    }
+                } else {
+                    initAppInfo();
+                }
             }
         } else {
             getDeviceLocation();
-            onPermissionSuccess();
+            if(mSplashViewModel.getSharedPrefs().mSharedPrefs.contains(SharedPrefs.PREF_ONBOARDED)) {
+                if(mSplashViewModel.getHasOnBoarded()) {
+                    onPermissionSuccess();
+                } else {
+                    initAppInfo();
+                }
+            } else {
+                initAppInfo();
+            }
         }
     }
 
@@ -123,7 +168,15 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mSplashViewModel.getOnRequestPermissionsResult(requestCode, permissions, grantResults);
         if(PermissionsUtil.mLocationPermissionGranted){
             getDeviceLocation();
-            onPermissionSuccess();
+            if(mSplashViewModel.getSharedPrefs().mSharedPrefs.contains(SharedPrefs.PREF_ONBOARDED)) {
+                if(mSplashViewModel.getHasOnBoarded()) {
+                    onPermissionSuccess();
+                } else {
+                    initAppInfo();
+                }
+            } else {
+                initAppInfo();
+            }
         }
     }
 

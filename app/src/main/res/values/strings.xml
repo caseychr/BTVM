@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">BTVM</string>
 
-    <string name="onboarding_message">This app requires an OBD2 vehicle\ndiagnostic scanner with Bluetooth capability.</string>
     <string name="ok">OK</string>
 
     <string name="perms_error_not_bt_capable">Sorry but this device is not Bluetooth Capable.
@@ -11,15 +10,15 @@
     <string name="perms_error_bt_not_on">Please turn on Bluetooth to use BTVM.</string>
     <string name="perms_btn_bt_on">Turn Bluetooth On</string>
 
-    <string name="perms_error_bt_no_paired_devices">This app requires an OBD2 vehicle\ndiagnostic scanner with Bluetooth capability.
-        Currently there are no Bluetooth devices paired.</string>
+    <string name="perms_error_bt_no_paired_devices">Currently there are no Bluetooth devices paired.</string>
     <string name="perms_btn_bt_settings">Go To Bluetooth Settings</string>
 
-    <string name="perms_error_btn_no_connect_device">This app requires an OBD2 vehicle\ndiagnostic scanner with Bluetooth capability.
-        Please choose a Device to Connect with.</string>
+    <string name="perms_error_btn_no_connect_device">Please choose a Device to Connect with.</string>
     <string name="perms_btn_bt_choose_device">Choose Device</string>
     <string name="error_unable_to_connect">Unable to Connect with device. Check that the device is within range.</string>
-
+    <string name="app_description">BTVM is a Vehicle Monitoring App that connects with an OBD2 adapter via Bluetooth.
+        This app records distance, coolant temperature, speed, airflow and RPMs from the vehicle for each trip taken with it running.
+        An OBD2 adapter is required for this app to work.</string>
     <string name="menu_title_metric">Metrics</string>
 
     <string name="empty_metrics_list">No Metrics Have\nBeen Recorded Yet</string>
@@ -33,6 +32,15 @@
     <string name="btn_start">START</string>
 
     <!-- METRIC/IMPERIAL UNITS -->
+    <string name="imperial_card_distance">SERVICE\nMILES</string>
+    <string name="imperial_card_coolant">COOLANT\nTEMP °F</string>
+
+    <string name="imperial_card_airflow">AIR FLOW\nOZ/SEC</string>
+
+    <string name="metric_card_distance">SERVICE\nKILOMETERS</string>
+    <string name="metric_card_coolant">COOLANT\nTEMP °C</string>
+    <string name="metric_card_airflow">AIR FLOW\nGMS/SEC</string>
+
     <string name="imperial_distance">MILES</string>
     <string name="imperial_coolant">°F</string>
     <string name="imperial_speed">MPH</string>
