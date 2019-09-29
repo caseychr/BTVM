@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 
 public class MapsUtil {
 
-    private static final float DEFAULT_ZOOM = 16f;
+    public static final float DEFAULT_ZOOM = 16f;
 
     public static void animateMap(GoogleMap googleMap, LatLng latLng, float zoom) {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));

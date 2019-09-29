@@ -1,8 +1,11 @@
 package com.bluetoothvehiclemonitor.btvm.util;
 
+import android.util.Log;
+
 import java.text.DecimalFormat;
 
 public class ConverterUtil {
+    private static final String TAG = "ConverterUtil";
 
     private static DecimalFormat df = new DecimalFormat("0.00");
 
@@ -14,6 +17,7 @@ public class ConverterUtil {
 
     public static float convertCelsiusToFahrenheit(float degrees) {
         float fahrenheit = (float) ((degrees * 1.8) + 32);
+        Log.i(TAG, degrees+", "+fahrenheit);
         return fahrenheit;
     }
 
@@ -33,6 +37,7 @@ public class ConverterUtil {
     public static String convertCelsiusToFahrenheit(String degrees) {
         float fdegrees = Float.valueOf(degrees);
         float fahrenheit = (float) ((fdegrees * 1.8) + 32);
+        Log.i(TAG+"_String", degrees+", "+fahrenheit);
         return String.valueOf(df.format(fahrenheit));
     }
 

@@ -1,5 +1,6 @@
 package com.bluetoothvehiclemonitor.btvm.services;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +10,14 @@ import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class GPSService extends IntentService {
-    private static final String TAG = "GPSPollingService";
+    private static final String TAG = "GPSService";
 
     private static final long DEFAULT_POLL_DELAY = 5 * 1000L; /* 5 seconds */
 
@@ -31,6 +30,7 @@ public class GPSService extends IntentService {
     public static final String NO_LOCATION_BROADCAST = "NO_LOCATION_BROADCAST";
 
     private static Context mContext;
+    private static Activity mActivity;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mCurrentLocation;
     private static Handler mHandler;
@@ -38,24 +38,20 @@ public class GPSService extends IntentService {
     private Runnable mCurrentLocationRunnable = new Runnable() {
         @Override
         public void run() {
+            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
             try{
-                Task location = mFusedLocationProviderClient.getLastLocation();
+                final Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()) { // We send currentLocation to broadcastLocation and then check for NULL
+                        if(task.isSuccessful()) {
                             //found location!
-                            mCurrentLocation = (Location) task.getResult();
-                            Log.i(TAG, "New current location SVC"+ mCurrentLocation.toString());
-                            broadcastCurrentLocation(mCurrentLocation);
+                            Location currentLocation = (Location) task.getResult();
+                            Log.i(TAG, currentLocation.toString());
+                            broadcastCurrentLocation(currentLocation);
+                        } else {
+                            //unable to get location
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mHandler.postDelayed(mCurrentLocationRunnable, DEFAULT_POLL_DELAY);
-                        // something happened no location found
-                        broadcastCurrentLocation(null);
                     }
                 });
             } catch (SecurityException e) {
@@ -70,8 +66,9 @@ public class GPSService extends IntentService {
         mHandler = new Handler();
     }
 
-    public static Intent newIntent(Context context) {
+    public static Intent newIntent(Context context, Activity activity) {
         mContext = context;
+        mActivity = activity;
         return new Intent(context, GPSService.class);
     }
 
@@ -112,7 +109,7 @@ public class GPSService extends IntentService {
             broadcastIntent.putExtra(BROADCAST_TYPE_KEY, NO_LOCATION_BROADCAST);
         }
         sendBroadcast(broadcastIntent);
-        Log.i(TAG, "sent broadcast");
+        Log.i(TAG, "sent broadcast "+location.toString());
         mHandler.postDelayed(mCurrentLocationRunnable, DEFAULT_POLL_DELAY);
     }
 }

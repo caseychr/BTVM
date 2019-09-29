@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -54,7 +53,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mIntentFilter.addCategory(GPSService.BROADCAST_CATEGORY);
 
         mMainViewModel = ViewModelProviders.of(this, mProviderFactory).get(MainViewModel.class);
-        Log.i(TAG, mMainViewModel.getSharedPrefsString());
     }
 
     @Override
@@ -149,7 +147,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public String updateDialogText() {
-        return "Unable to Connect with device.\nCheck that the device is within range.";
+        return getString(R.string.error_unable_to_connect);
     }
 
     @Override
