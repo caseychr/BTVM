@@ -23,7 +23,7 @@ public class MetricsUtil {
             float engineRPM = 0;
             float coolant = 0;
             float speed = 0;
-            int distance = 0;
+            float distance = 0;
             for(int i=0;i<trips.size();i++) {
 
                 airflow += Float.parseFloat(trips.get(i).getMetrics().getAirFlow());
@@ -32,6 +32,12 @@ public class MetricsUtil {
                 speed += Float.parseFloat(trips.get(i).getMetrics().getVehicleSpeed());
                 distance += Float.parseFloat(trips.get(i).getMetrics().getDistance());
             }
+            /*if(trips.size() > 1) {
+                distance = Float.parseFloat(trips.get(trips.size()-1).getMetrics().getDistance()) -
+                        Float.parseFloat(trips.get(0).getMetrics().getDistance());
+            } else {
+                distance = Float.parseFloat(trips.get(0).getMetrics().getDistance());
+            }*/
             airflow = airflow/trips.size();
             engineRPM = engineRPM/trips.size();
             coolant = coolant/trips.size();

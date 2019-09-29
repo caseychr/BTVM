@@ -80,4 +80,23 @@ public class HomeViewModel extends AndroidViewModel {
     public void setRunningBT(BluetoothPID bluetoothPID) {
         mTripRepository.setRunningBT(bluetoothPID);
     }
+
+    public boolean checkValidTrip(Trip trip) {
+        if(trip == null || trip.getMetrics() == null) {
+            return false;
+        } else if(trip.getMetrics().getDistance() != null && trip.getMetrics().getAirFlow() != null &&
+                trip.getMetrics().getCoolantTemp() != null && trip.getMetrics().getEngineRPM() != null &&
+                trip.getMetrics().getVehicleSpeed() != null) {
+            if(trip.getMetrics().getDistance().equalsIgnoreCase("NaN")
+                    || trip.getMetrics().getAirFlow().equalsIgnoreCase("NaN")
+                    || trip.getMetrics().getCoolantTemp().equalsIgnoreCase("NaN")
+                    || trip.getMetrics().getEngineRPM().equalsIgnoreCase("NaN")
+                    || trip.getMetrics().getVehicleSpeed().equalsIgnoreCase("NaN")) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 }

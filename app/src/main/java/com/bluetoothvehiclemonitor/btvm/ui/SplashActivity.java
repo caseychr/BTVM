@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +64,6 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
         mProgressBar.setVisibility(View.VISIBLE);
         mSplashViewModel = ViewModelProviders.of(this, mProviderFactory).get(SplashViewModel.class);
         checkPerms();
-        //checkOnboard();
     }
 
     private void setLogo() {
@@ -74,7 +72,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
 
     private void onPermissionSuccess(){
         getDeviceLocation();
-        mSplashViewModel.mSharedPrefs.setIsRunning(false);
+        mSplashViewModel.setIsRunning(false);
         mProgressBar.setVisibility(View.GONE);
         Intent intent = MainActivity.newIntent(this);
         startActivity(intent);
@@ -95,7 +93,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
             @Override
             public void onClick(int position) {
                 BluetoothDevice device = mSplashViewModel.mDevices.get(position);
-                mSplashViewModel.mSharedPrefs.setDevice(device.getName(), device.getAddress());
+                mSplashViewModel.setDevice(device.getName(), device.getAddress());
                 BaseActivity.sBluetoothDevice = device;
                 checkPerms();
                 mDeviceWindow.dismiss();
@@ -105,9 +103,7 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
     }
 
     public void checkPerms() {
-        Log.i(TAG, "checkPerms");
         if(!mSplashViewModel.checkBluetoothRequirements(this) && mSplashViewModel.mDialogTv != null) {
-            Log.i(TAG, "ccc");
             mDialog.show(getSupportFragmentManager(), "error");
         } else if (!mSplashViewModel.checkBluetoothRequirements(this)){
             if(mSplashViewModel.getAllPermissions(this)) {
@@ -160,23 +156,23 @@ public class SplashActivity extends BaseActivity implements BottomSheetDialog.Bo
 
     public void storeLocation(Location location) {
         if(location == null) {
-            if(!mSplashViewModel.mSharedPrefs.mSharedPrefs.contains(SharedPrefs.PREF_LAST_KNOWN_LAT)) {
-                Log.i(TAG, "get default");
-                mSplashViewModel.mSharedPrefs.setLastLatLon(33.900396, -84.277227);
+            if(!mSplashViewModel.getSharedPrefs().mSharedPrefs.contains(SharedPrefs.PREF_LAST_KNOWN_LAT)) {
+                // Set location as Linbergh MARTA Station since we didn't get anything
+                mSplashViewModel.setLastLatLon(33.823249, -84.369391);
                 sCurrentLocation = new Location("location_default");
-                sCurrentLocation.setLatitude(33.900396);
-                sCurrentLocation.setLongitude(-84.277227);
+                sCurrentLocation.setLatitude(33.823249);
+                sCurrentLocation.setLongitude(-84.369391);
             } else {
-                Log.i(TAG, "get from SP");
+                // Get location from Shared Prefs
                 sCurrentLocation = new Location("location_shared_prefs");
-                Double[] d = mSplashViewModel.mSharedPrefs.getLastLatLon();
+                Double[] d = mSplashViewModel.getLastLatLon();
                 sCurrentLocation.setLatitude(d[0]);
                 sCurrentLocation.setLongitude(d[1]);
             }
         } else {
-            Log.i(TAG, "got Actual loc");
+            // Get actual location from GPS device
             sCurrentLocation = location;
-            mSplashViewModel.mSharedPrefs.setLastLatLon(location.getLatitude(), location.getLongitude());
+            mSplashViewModel.setLastLatLon(location.getLatitude(), location.getLongitude());
         }
     }
 

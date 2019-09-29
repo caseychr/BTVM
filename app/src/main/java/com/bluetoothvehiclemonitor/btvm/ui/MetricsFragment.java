@@ -1,6 +1,7 @@
 package com.bluetoothvehiclemonitor.btvm.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,6 @@ import android.widget.TextView;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.model.Trip;
-import com.bluetoothvehiclemonitor.btvm.util.TestingUtil;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.MetricsViewModel;
 import com.bluetoothvehiclemonitor.btvm.viewmodels.ViewModelProviderFactory;
 
@@ -79,6 +79,7 @@ public class MetricsFragment extends DaggerFragment {
                 mTripList = trips;//TestingUtil.getListWithInvalidTripsMixedIn();
                 if(checkIfMetricsAreValid()) {
                     initRecycler();
+                    Log.i(TAG, mTripList.toString());
                     mMetricsAdapter.setTrips(mTripList, mMetricsViewModel.isMetric());
                 }
             }

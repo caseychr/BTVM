@@ -8,10 +8,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.provider.Settings;
-import android.util.Log;
 
 import com.bluetoothvehiclemonitor.btvm.R;
 import com.bluetoothvehiclemonitor.btvm.data.local.sharedprefs.SharedPrefs;
+import com.bluetoothvehiclemonitor.btvm.repository.TripRepository;
 import com.bluetoothvehiclemonitor.btvm.ui.BaseActivity;
 import com.bluetoothvehiclemonitor.btvm.util.PermissionsUtil;
 
@@ -27,8 +27,7 @@ public class SplashViewModel extends AndroidViewModel {
     private static final String TAG = "SplashViewModel";
     public static final int BLUETOOTH_ON_REQUEST_CODE = 2;
 
-    @Inject
-    public SharedPrefs mSharedPrefs;
+    @Inject public TripRepository mTripRepository;
 
     public Application mApplication;
     public boolean haveLocationPermissions;
@@ -44,9 +43,9 @@ public class SplashViewModel extends AndroidViewModel {
     public List<BluetoothDevice> mDevices = new ArrayList<>();
 
     @Inject
-    public SplashViewModel(Application application, SharedPrefs sharedPrefs) {
+    public SplashViewModel(Application application, TripRepository tripRepository) {
         super(application);
-        mSharedPrefs = sharedPrefs;
+        mTripRepository = tripRepository;
         haveBTPermissions = false;
         haveLocationPermissions = false;
         isBTCapable = false;
@@ -60,16 +59,12 @@ public class SplashViewModel extends AndroidViewModel {
             mDevices.addAll(mAdapter.getBondedDevices());
         }
         if(checkStoredDevice()) {
-            mBluetoothDeviceArray = mSharedPrefs.getDevice();
+            mBluetoothDeviceArray = getSharedPrefs().getDevice();
         }
     }
 
-    public String getSharedPrefsString() {
-        return mSharedPrefs.getString();
-    }
-
     private boolean checkStoredDevice() {
-        return mSharedPrefs.mSharedPrefs.contains(PREF_BT_DEVICE_NAME);
+        return getSharedPrefs().mSharedPrefs.contains(PREF_BT_DEVICE_NAME);
     }
 
     private void setBluetoothDevice() {
@@ -83,6 +78,26 @@ public class SplashViewModel extends AndroidViewModel {
                 BaseActivity.sBluetoothDevice = device;
             }
         }
+    }
+
+    public void setLastLatLon(double lat, double lon) {
+        mTripRepository.setLastLatLon(lat, lon);
+    }
+
+    public Double[] getLastLatLon() {
+        return mTripRepository.getLastLatLon();
+    }
+
+    public SharedPrefs getSharedPrefs() {
+        return mTripRepository.mSharedPrefs;
+    }
+
+    public void setIsRunning(boolean running) {
+        mTripRepository.setIsRunning(running);
+    }
+
+    public void setDevice(String name, String address) {
+        mTripRepository.setDevice(name, address);
     }
 
     public boolean checkBluetoothRequirements(Activity activity) {
@@ -99,30 +114,25 @@ public class SplashViewModel extends AndroidViewModel {
                             return true;
                         }
                     } else if(mAdapter.getBondedDevices().size() == 1) {
-                        Log.i(TAG, "here2");
                         BaseActivity.sBluetoothDevice = mDevices.get(0);
-                        mSharedPrefs.setDevice(BaseActivity.sBluetoothDevice.getName(),
+                        getSharedPrefs().setDevice(BaseActivity.sBluetoothDevice.getName(),
                                 BaseActivity.sBluetoothDevice.getAddress());
                         if(PermissionsUtil.mLocationPermissionGranted) {
-                            Log.i(TAG, "here6");
                             return true;
                         } else {
                             getAllPermissions(activity);
                         }
                     } else {
-                        Log.i(TAG, "here3");
                         mDialogTv = activity.getString(R.string.perms_error_btn_no_connect_device);
                         mBtnDialog = activity.getString(R.string.perms_btn_bt_choose_device);
                         return false;
                     }
                 } else {
-                    Log.i(TAG, "here4");
                     mDialogTv = activity.getString(R.string.perms_error_bt_no_paired_devices);
                     mBtnDialog = activity.getString(R.string.perms_btn_bt_settings);
                     return false;
                 }
             } else {
-                Log.i(TAG, "here5");
                 mDialogTv = activity.getString(R.string.perms_error_bt_not_on);
                 mBtnDialog = activity.getString(R.string.perms_btn_bt_on);
             }
@@ -134,10 +144,6 @@ public class SplashViewModel extends AndroidViewModel {
         Intent intent;
         if(mBtnDialog.equals(activity.getString(R.string.perms_btn_close_app))) {
             activity.finish();
-        } else if(mBtnDialog.equals("OK")) {
-            Log.i(TAG, "here ok");
-            mSharedPrefs.setOnBoarded(true);
-            checkBluetoothRequirements(activity);
         } else if(mBtnDialog.equals(activity.getString(R.string.perms_btn_bt_on))) {
             intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             mDialogTv = null;
