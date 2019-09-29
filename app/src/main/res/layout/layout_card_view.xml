@@ -23,16 +23,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-    <TextView
-        android:id="@+id/tv_speed_num"
-        style="@style/CardStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp" android:text="0.0"
-        app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"/>
+
     <TextView
         android:id="@+id/tv_service_miles"
         style="@style/CardStyle"
@@ -40,34 +31,51 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" android:text="KILOMETERS"
+        android:gravity="center"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_service_miles_num"/>
-    <TextView
-        android:id="@+id/tv_speed"
-        style="@style/CardStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" android:text="KMPH"
-        app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/tv_speed_num"/>
+
     <TextView
         android:id="@+id/tv_coolant_num"
         style="@style/CardStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center" android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp" android:layout_marginEnd="8dp"
-        android:text="0" app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/tv_service_miles"/>
+        android:gravity="center"
+        android:layout_marginStart="8dp" android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="0" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/tv_coolant"
         style="@style/CardStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" android:text="CELSIUS"
-        app:layout_constraintEnd_toStartOf="@+id/guideline" app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/tv_coolant_num"/>
+
+    <TextView
+        android:id="@+id/tv_speed_num"
+        style="@style/CardStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp" android:text="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/tv_service_miles"/>
+    <TextView
+        android:id="@+id/tv_speed"
+        style="@style/CardStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" android:text="KMPH"
+        app:layout_constraintEnd_toEndOf="@+id/guideline" app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_speed_num"/>
+
     <TextView
         android:id="@+id/tv_engine_num"
         style="@style/CardStyle"
@@ -76,7 +84,7 @@
         android:gravity="center" android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="0" app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline" app:layout_constraintTop_toBottomOf="@+id/tv_speed"/>
+        app:layout_constraintStart_toStartOf="@+id/guideline" app:layout_constraintTop_toBottomOf="@+id/tv_coolant"/>
     <TextView
         android:id="@+id/tv_engine"
         style="@style/CardStyle"
@@ -91,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="18dp"
         android:text="0" app:layout_constraintEnd_toEndOf="@+id/tv_engine_num"
         app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/btn_start"/>
     <TextView
@@ -100,6 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+        android:gravity="center"
         android:text="GRAMS/SEC" app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/tv_airflow_num"/>
     <ImageView

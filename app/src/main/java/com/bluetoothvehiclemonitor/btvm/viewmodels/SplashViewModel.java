@@ -80,6 +80,14 @@ public class SplashViewModel extends AndroidViewModel {
         }
     }
 
+    public boolean getHasOnBoarded() {
+        return mTripRepository.getHasOnboarded();
+    }
+
+    public void setHasOnBoarded(boolean hasOnBoarded) {
+        mTripRepository.setHasOnboarded(hasOnBoarded);
+    }
+
     public void setLastLatLon(double lat, double lon) {
         mTripRepository.setLastLatLon(lat, lon);
     }

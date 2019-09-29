@@ -237,15 +237,15 @@ public class HomeFragment extends DaggerFragment implements OnMapReadyCallback, 
 
     private void setUnits() {
         if(mHomeViewModel.isMetric()) {
-            mDistanceTv.setText(R.string.metric_distance);
+            mDistanceTv.setText(R.string.metric_card_distance);
             mSpeedTv.setText(R.string.metric_speed);
-            mCoolantTv.setText(R.string.metric_coolant);
-            mAirFlowTv.setText(R.string.metric_airflow);
+            mCoolantTv.setText(R.string.metric_card_coolant);
+            mAirFlowTv.setText(R.string.metric_card_airflow);
         } else {
-            mDistanceTv.setText(R.string.imperial_distance);
+            mDistanceTv.setText(R.string.imperial_card_distance);
             mSpeedTv.setText(R.string.imperial_speed);
-            mCoolantTv.setText(R.string.imperial_coolant);
-            mAirFlowTv.setText(R.string.imperial_airflow);
+            mCoolantTv.setText(R.string.imperial_card_coolant);
+            mAirFlowTv.setText(R.string.imperial_card_airflow);
         }
     }
 
