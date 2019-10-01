@@ -17,7 +17,7 @@ The Bluetooth Service Library this app uses can be found here: (https://github.c
 
 ## Features
 * Checks that user is indeed connected with device
-* Polls for vehicle speed, air flow, odometer (), RPMs and coolant temperature for each trip initiated by the user
+* Polls for vehicle speed, air flow, distance, RPMs and coolant temperature for each trip initiated by the user
 * Tracks the vehicle's location during each trip
 * Displays each trip's average metrics and the vehicle's overall metrics for the life of the application
 
