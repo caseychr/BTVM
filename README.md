@@ -2,7 +2,7 @@
 Bluetooth Vehicle Monitoring is an Android Application that connects with an OBD2 adapter via Bluetooth. This app records
 metrics from the vehicle for each trip taken with it running. An OBD2 adapter is required for this app to work.
 
-<img src="https://user-images.githubusercontent.com/11616798/65959750-d5e2ae80-e420-11e9-934f-b113a7cc05bb.png" width="200"/>
+<img src="https://user-images.githubusercontent.com/11616798/65960747-2529de80-e423-11e9-9298-cdb5ae2c7d4d.png" width="200"/>
 
 ## Download
 BTVM is available on the play store here: (Place Holder)(https://github.com/caseychr/bluetooth-service-library)
