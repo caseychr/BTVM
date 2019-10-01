@@ -19,7 +19,7 @@ The Bluetooth Service Library this app uses can be found here: (https://github.c
 * Tracks the vehicle's location during each trip
 * Displays each trip's average metrics and the vehicle's overall metrics for the life of the application
 
-![home_screen_1](https://user-images.githubusercontent.com/11616798/65959750-d5e2ae80-e420-11e9-934f-b113a7cc05bb.png)
+
 
 ## Archectures & Libraries
 * MVVM with LiveData
