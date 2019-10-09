@@ -5,7 +5,7 @@ metrics from the vehicle for each trip taken with it running. An OBD2 adapter is
 <img src="https://user-images.githubusercontent.com/11616798/65960747-2529de80-e423-11e9-9298-cdb5ae2c7d4d.png" width="200"/>
 
 ## Download
-BTVM is available on the play store here: (Place Holder)(https://play.google.com/store/apps/details?id=com.bluetoothvehiclemonitor.btvm)
+BTVM is available on the play store here: https://play.google.com/store/apps/details?id=com.bluetoothvehiclemonitor.btvm
 
 ## About BTVM
 The motivation for this application arose from my professional work. At my company we needed a way for our apps to read
@@ -13,7 +13,7 @@ information off our clients' vehicles and report those metrics back to the serve
 their own reporting. Therefore I created a Bluetooth Library that connects with OBD2 vehicle adapters and reads those metrics
 from the adapter. I created BTVM in order to better understand how the Bluetooth Library needed to be used by a developer
 implementing it as well as use it in servicing my own vehicle.
-The Bluetooth Service Library this app uses can be found here: (https://github.com/caseychr/bluetooth-service-library)
+The Bluetooth Service Library this app uses can be found here: https://github.com/caseychr/bluetooth-service-library
 
 ## Features
 * Checks that user is indeed connected with device
