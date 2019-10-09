@@ -5,7 +5,7 @@ metrics from the vehicle for each trip taken with it running. An OBD2 adapter is
 <img src="https://user-images.githubusercontent.com/11616798/65960747-2529de80-e423-11e9-9298-cdb5ae2c7d4d.png" width="200"/>
 
 ## Download
-BTVM is available on the play store here: (Place Holder)(https://github.com/caseychr/bluetooth-service-library)
+BTVM is available on the play store here: (Place Holder)(https://play.google.com/store/apps/details?id=com.bluetoothvehiclemonitor.btvm)
 
 ## About BTVM
 The motivation for this application arose from my professional work. At my company we needed a way for our apps to read
